@@ -1,5 +1,5 @@
 import styled  from "styled-components/macro"
-import AccountDetails from "../AccountDetails"
+import AccountDetails from "./AccountDetails/AccountDetails"
 
 const HeaderCover = styled.div`
     display: flex;

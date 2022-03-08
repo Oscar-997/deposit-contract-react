@@ -1,8 +1,9 @@
 import styled from "styled-components/macro";
-import { Button} from "../Buttons/index";
-import { login, logout } from '../../services/near'
+import { Button } from "../Buttons/Button";
+import Menu  from "../Menu/Menu"
+import { login, logout } from '../../../services/near'
 import { useContext } from 'react'
-import { AuthContext } from '../../context/authContext'
+import { AuthContext } from '../../../context/authContext'
 const DetailCover = styled.div`
     display: flex;
     flex-direction: row;
@@ -23,7 +24,6 @@ const AccountDetails = () => {
 
     const login = () => {
         window.walletConnection.requestSignIn()
-        console.log('login succesfully')
     }
       
     const logout = () => {
@@ -34,8 +34,13 @@ const AccountDetails = () => {
     return (
         <DetailCover>
             <DetailFlex>
-                { !isLoggedIn && <Button onClick={ login }>Connect to NEAR wallet</Button> }
-                { isLoggedIn && <Button onClick={ logout }>{ window.accountId }</Button> }
+                { !isLoggedIn && <Button onClick={ login }>Connect to NEAR wallet</Button>}
+                { isLoggedIn && 
+                <>
+                    <Button>{ window.accountId }</Button>
+                    <Menu></Menu>
+                    <Button onClick={ logout }> Logout</Button>
+                 </>}
             </DetailFlex>
         </DetailCover>
     )    
