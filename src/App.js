@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from './Components/Header';
+import styled from 'styled-components';
 
-function App() {
+const AppWrapper = styled.div`
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+`
+
+const HeaderWrapper = styled.div`
+    ${({ theme }) => theme.flexRowNoWrap}
+    width: 100%;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    z-index: 2;
+`
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppWrapper>
+      <HeaderWrapper>
+        <Header></Header>
+      </HeaderWrapper>
+    </AppWrapper>
   );
 }
 
