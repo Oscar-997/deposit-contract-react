@@ -1,16 +1,15 @@
 import styled from 'styled-components/macro'
-import { useState } from 'react'
 
 
-const Body = () => {
+const Home = () => {
     
     return (
         <div>
             <h1>
-                hello
+                Home page
             </h1>
         </div>
     )
 }
 
-export default Body
+export default Home

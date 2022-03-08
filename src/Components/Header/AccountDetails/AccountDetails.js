@@ -1,6 +1,6 @@
 import styled from "styled-components/macro";
-import { Button } from "../Buttons/Button";
-import Menu  from "../Menu/Menu"
+import { Button } from "react-bootstrap";
+import Menu  from "../Buttons/ButtonViewAccount"
 import { login, logout } from '../../../services/near'
 import { useContext } from 'react'
 import { AuthContext } from '../../../context/authContext'

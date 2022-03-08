@@ -1,5 +1,7 @@
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home/Home'
+import Account from './pages/Account/Account';
 import Header from './Components/Header/Header';
-import Body from './Components/Body/Body';
 import styled from 'styled-components';
 
 const AppWrapper = styled.div`
@@ -35,7 +37,10 @@ const App = () => {
         <Header></Header>
       </HeaderWrapper>
       <BodyWrapper>
-        <Body></Body>
+        <Routes>
+          <Route path="/" element={<Home />}/>
+          <Route path="/account" element={<Account />}/>
+        </Routes>
       </BodyWrapper>
     </AppWrapper>
   );
