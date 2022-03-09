@@ -2,7 +2,10 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home'
 import Account from './pages/Account/Account';
 import Header from './Components/Header/Header';
+import Body from './pages/Body/Body';
+import Home from './pages/Home/Home';
 import styled from 'styled-components';
+import { Route, Routes } from 'react-router-dom';
 
 const AppWrapper = styled.div`
     display: flex;
@@ -38,8 +41,8 @@ const App = () => {
       </HeaderWrapper>
       <BodyWrapper>
         <Routes>
-          <Route path="/" element={<Home />}/>
-          <Route path="/account" element={<Account />}/>
+          <Route path='/' element={<Home />}/>
+          <Route path="/account" element={<Body/>}/>
         </Routes>
       </BodyWrapper>
     </AppWrapper>
