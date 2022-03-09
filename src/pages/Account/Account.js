@@ -1,20 +1,22 @@
 import { Table } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState } from 'react';
 
 
 const Account = () => {
-
+    const [account, setAccount] = useState({})
     const contract = window.contract;
     console.log(contract);
     const accountId = window.accountId;
-    const account = contract.get_deposits({ account_id: accountId })
+    contract.get_deposits({ account_id: accountId })
     .then((res) => {
+        setAccount(account)
         console.log(res)
     })
 
     return (
         <div>
-            <Table striped bordered hover responsive>
+            <Table striped bordered hover responsive >
                 <thead>
                     <tr>
                         <th>STT</th>
