@@ -1,9 +1,10 @@
-import styled from "styled-components/macro";
-import { Button } from "react-bootstrap";
-import Menu  from "../Buttons/ButtonViewAccount"
+import styled from "styled-components/macro"
+import { Button } from "react-bootstrap"
+import ButtonViewAccount from "../Buttons/ButtonViewAccount"
 import { login, logout } from '../../../services/near'
 import { useContext } from 'react'
 import { AuthContext } from '../../../context/authContext'
+
 const DetailCover = styled.div`
     display: flex;
     flex-direction: row;
@@ -38,7 +39,7 @@ const AccountDetails = () => {
                 { isLoggedIn && 
                 <>
                     <Button>{ window.accountId }</Button>
-                    <Menu></Menu>
+                    <ButtonViewAccount></ButtonViewAccount>
                     <Button onClick={ logout }> Logout</Button>
                  </>}
             </DetailFlex>
