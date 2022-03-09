@@ -6,11 +6,7 @@ const Home = () => {
     return (
         <div>
             <h1>
-<<<<<<< Updated upstream:src/pages/Home/Home.js
-                Home page
-=======
-                Acccount 
->>>>>>> Stashed changes:src/pages/Body/Body.js
+                Acccount
             </h1>
         </div>
     )
