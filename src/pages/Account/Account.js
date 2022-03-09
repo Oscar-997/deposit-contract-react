@@ -1,48 +1,51 @@
-import { Table } from 'react-bootstrap';
+import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 const Account = () => {
     const [account, setAccount] = useState({})
+    const [balanceOf, setBalanceOf] = useState([])
+
     const contract = window.contract;
     console.log(contract);
     const accountId = window.accountId;
-    contract.get_deposits({ account_id: accountId })
-    .then((res) => {
-        setAccount(account)
-        console.log(res)
-    })
+    let i = 1
+
+    const testfunc = async () => {
+        const depo = await contract.get_deposits({ account_id: accountId })
+        setBalanceOf([depo])
+    }
+
+    useEffect(() => {
+        testfunc()
+    }, [])
+
+    useEffect(() => {
+        console.log(balanceOf)
+    }, [balanceOf])
 
     return (
-        <div>
-            <Table striped bordered hover responsive >
+        <Container fluid>
+            <Table striped bordered hover responsive>
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Token</th>
+                        <th>Token ID</th>
                         <th>Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Bird</td>
-                        <td> Bird</td>
-                    </tr>
+                    {balanceOf.map(item => (
+                        <tr key={Object.keys(item)}>
+                            <td>{i++}</td>
+                            <td>{Object.keys(item)[0]}</td>
+                            <td>{item[Object.keys(item)[0]]}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </Table>
-        </div>
+        </Container>
     )
 }
 
