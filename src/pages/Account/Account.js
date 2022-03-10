@@ -16,15 +16,12 @@ const Account = () => {
         for (let i in depo) {
 
             let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
-
             const obj = {
                 id: i,
                 name: metaData.name,
                 balance: depo[i]
             };
             setResult(data => [...data,obj]);
-
-            console.log(obj)
         }
     }
 
@@ -47,7 +44,7 @@ const Account = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {result.map(function (item, index) {
+                    {result.map((item, index) => {
                         return (
                             <tr key={index}>
                                 <td>{++index}</td>
@@ -59,7 +56,6 @@ const Account = () => {
                                 </td>
                             </tr>
                         )
-
                     })}
 
                 </tbody>
