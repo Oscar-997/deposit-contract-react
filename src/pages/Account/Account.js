@@ -4,47 +4,48 @@ import { useEffect, useState } from 'react';
 
 
 const Account = () => {
-    const [account, setAccount] = useState({})
     const [balanceOf, setBalanceOf] = useState([])
+    
 
     const contract = window.contract;
-    console.log(contract);
     const accountId = window.accountId;
-    let i = 1
 
-    const testfunc = async () => {
+    const getBalanceOf = async () => {
         const depo = await contract.get_deposits({ account_id: accountId })
-        setBalanceOf([depo])
+        for (let i in depo) {
+            setBalanceOf(prev => [...prev, {[i]: depo[i]}])
+        }
     }
 
     useEffect(() => {
-        testfunc()
+        getBalanceOf()
     }, [])
 
-    useEffect(() => {
-        console.log(balanceOf)
-    }, [balanceOf])
+    console.log(balanceOf)
+
+    
 
     return (
         <Container fluid>
+            <h1>Contract wallet</h1>
             <Table striped bordered hover responsive>
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Token ID</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {balanceOf.map(item => (
-                        <tr key={Object.keys(item)}>
-                            <td>{i++}</td>
-                            <td>{Object.keys(item)[0]}</td>
-                            <td>{item[Object.keys(item)[0]]}</td>
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Token ID</th>
+                            <th>Amount</th>
                         </tr>
-                    ))}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {balanceOf.map((item, index) => (
+                            <tr key={index}>
+                                <td>{++index}</td>
+                                <td>{Object.keys(item)[0]}</td>
+                                <td>{item[Object.keys(item)[0]] * 10 ** -8}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
         </Container>
     )
 }

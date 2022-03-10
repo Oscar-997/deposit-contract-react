@@ -12,7 +12,7 @@ const ButtonViewAccount = () => {
         </Button>
         <Button>
             <Link to={'/account'} style={{color: 'white', textDecoration: 'none'}}>
-                View Account
+                View Contract wallet
             </Link>
         </Button>
     </>

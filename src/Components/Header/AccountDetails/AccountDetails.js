@@ -11,40 +11,43 @@ const DetailCover = styled.div`
     -webkit-box-align: center;
     align-items: center;
     justify-self: flex-end;
-`
-
-const DetailFlex = styled.div`
+    `
+    
+    const DetailFlex = styled.div`
     display: flex;
     -webkit-box-align: center;
     align-items: center;
     gap: 5px;
-`
-const AccountDetails = () => {
-    
-    const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext)
+    `
+    const AccountDetails = () => {
+        
+        const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext)
 
     const login = () => {
         window.walletConnection.requestSignIn()
     }
-      
+
     const logout = () => {
         window.walletConnection.signOut()
         setIsLoggedIn(false)
+        /*global event, fdescribe*/
+        /*eslint no-restricted-globals: ["error", "event", "fdescribe"]*/
+        location.reload()
     }
 
     return (
         <DetailCover>
             <DetailFlex>
-                { !isLoggedIn && <Button onClick={ login }>Connect to NEAR wallet</Button>}
-                { isLoggedIn && 
-                <>
-                    <Button>{ window.accountId }</Button>
-                    <ButtonViewAccount></ButtonViewAccount>
-                    <Button onClick={ logout }> Logout</Button>
-                 </>}
+                {!isLoggedIn && <Button onClick={login}>Connect to NEAR wallet</Button>}
+                {isLoggedIn &&
+                    <>
+                        <Button>{window.accountId}</Button>
+                        <ButtonViewAccount></ButtonViewAccount>
+                        <Button onClick={logout}> Logout</Button>
+                    </>}
             </DetailFlex>
         </DetailCover>
-    )    
+    )
 }
 
 export default AccountDetails
