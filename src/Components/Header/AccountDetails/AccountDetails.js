@@ -41,9 +41,9 @@ const DetailCover = styled.div`
                 {!isLoggedIn && <Button onClick={login}>Connect to NEAR wallet</Button>}
                 {isLoggedIn &&
                     <>
-                        <Button>{window.accountId}</Button>
+                        <Button variant="info">{window.accountId}</Button>
                         <ButtonViewAccount></ButtonViewAccount>
-                        <Button onClick={logout}> Logout</Button>
+                        <Button variant="dark" onClick={logout}> Logout</Button>
                     </>}
             </DetailFlex>
         </DetailCover>

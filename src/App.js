@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home'
 import Account from './pages/Account/Account';
+import Swap from './pages/Swap/Swap';
 import Header from './Components/Header/Header';
 import styled from 'styled-components';
 
@@ -40,6 +41,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path="/account" element={<Account/>}/>
+          <Route path="/swap" element={<Swap/>}/>
         </Routes>
       </BodyWrapper>
     </AppWrapper>

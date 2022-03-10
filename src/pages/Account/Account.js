@@ -1,51 +1,69 @@
 import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
+import Deposit from '../../Components/Header/Buttons/Deposit'
 
 
 const Account = () => {
-    const [balanceOf, setBalanceOf] = useState([])
+    const [result, setResult] = useState([])
     
-
     const contract = window.contract;
     const accountId = window.accountId;
 
     const getBalanceOf = async () => {
         const depo = await contract.get_deposits({ account_id: accountId })
+
         for (let i in depo) {
-            setBalanceOf(prev => [...prev, {[i]: depo[i]}])
+
+            let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
+
+            const obj = {
+                id: i,
+                name: metaData.name,
+                balance: depo[i]
+            };
+            setResult(data => [...data,obj]);
+
+            console.log(obj)
         }
     }
+
 
     useEffect(() => {
         getBalanceOf()
     }, [])
-
-    console.log(balanceOf)
-
     
-
     return (
         <Container fluid>
             <h1>Contract wallet</h1>
-            <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>STT</th>
-                            <th>Token ID</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {balanceOf.map((item, index) => (
+            <Table striped hover bordered responsive>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Token name</th>
+                        <th>Token ID</th>
+                        <th>Amount</th>
+                        <th>Deposit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {result.map(function (item, index) {
+                        return (
                             <tr key={index}>
                                 <td>{++index}</td>
-                                <td>{Object.keys(item)[0]}</td>
-                                <td>{item[Object.keys(item)[0]] * 10 ** -8}</td>
+                                <td>{item.name}</td>
+                                <td>{item.id}</td>
+                                <td>{item.balance * 10 **-8}</td>
+                                <td>
+                                    <Deposit></Deposit>
+                                </td>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        )
+
+                    })}
+
+                </tbody>
+            </Table>
         </Container>
     )
 }
