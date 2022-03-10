@@ -1,5 +1,6 @@
 import {Button, Modal, InputGroup, FormControl} from 'react-bootstrap';
-import React, {useState} from 'react';
+import { resultDeposit } from '../../../pages/Account/Account';
+import React, {useState, useContext} from 'react';
 
 const Deposit = () => {
     const [show, setShow] = useState(false);
@@ -7,9 +8,25 @@ const Deposit = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const result = useContext(resultDeposit)
+    
+    const handleDeposit = (r) => {
+      for (let i in r) {
+        const obj = {
+          id: r[i].id,
+        }
+        console.log(obj);
+      }
+    }
+
+    function handle(event) {
+      handleShow()
+      handleDeposit(result)
+    }
+
     return (
         <>
-          <Button variant="success" onClick={handleShow}>
+          <Button variant="success" onClick={handle}>
             Deposit
           </Button>
     

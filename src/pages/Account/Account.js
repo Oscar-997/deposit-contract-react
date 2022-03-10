@@ -1,8 +1,9 @@
 import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext } from 'react';
 import Deposit from '../../Components/Header/Buttons/Deposit'
 
+export const resultDeposit = createContext()
 
 const Account = () => {
     const [result, setResult] = useState([])
@@ -26,7 +27,6 @@ const Account = () => {
         }
     }
 
-
     useEffect(() => {
         getBalanceOf()
     }, [])
@@ -46,20 +46,22 @@ const Account = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {result.map((item, index) => {
-                        return (
-                            <tr key={index}>
-                                <td>{++index}</td>
-                                <td>{item.symbol}</td>
-                                <td>{item.name}</td>
-                                <td>{item.id}</td>
-                                <td>{item.balance * 10 **-8}</td>
-                                <td>
-                                    <Deposit></Deposit>
-                                </td>
-                            </tr>
-                        )
-                    })}
+                    <resultDeposit.Provider value={result}>
+                        {result.map((item, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td>{++index}</td>
+                                    <td>{item.symbol}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.id}</td>
+                                    <td>{item.balance * 10 **-8}</td>
+                                    <td>
+                                        <Deposit />
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </resultDeposit.Provider>
 
                 </tbody>
             </Table>
