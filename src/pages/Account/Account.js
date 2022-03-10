@@ -12,13 +12,14 @@ const Account = () => {
 
     const getBalanceOf = async () => {
         const depo = await contract.get_deposits({ account_id: accountId })
-
+        
         for (let i in depo) {
 
             let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
             const obj = {
                 id: i,
                 name: metaData.name,
+                symbol: metaData.symbol,
                 balance: depo[i]
             };
             setResult(data => [...data,obj]);
@@ -37,6 +38,7 @@ const Account = () => {
                 <thead>
                     <tr>
                         <th>STT</th>
+                        <th>Symbol</th>
                         <th>Token name</th>
                         <th>Token ID</th>
                         <th>Amount</th>
@@ -48,6 +50,7 @@ const Account = () => {
                         return (
                             <tr key={index}>
                                 <td>{++index}</td>
+                                <td>{item.symbol}</td>
                                 <td>{item.name}</td>
                                 <td>{item.id}</td>
                                 <td>{item.balance * 10 **-8}</td>

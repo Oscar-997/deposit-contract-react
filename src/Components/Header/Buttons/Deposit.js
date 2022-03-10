@@ -24,6 +24,7 @@ const Deposit = () => {
                     aria-label="Default"
                     aria-describedby="inputGroup-sizing-default"
                     />
+
                 </InputGroup>
             </Modal.Body>
             <Modal.Footer>
