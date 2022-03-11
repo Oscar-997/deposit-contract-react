@@ -19,6 +19,7 @@ const Account = () => {
                 id: i,
                 name: metaData.name,
                 symbol: metaData.symbol,
+                decimals: metaData.decimals,
                 balance: depo[i]
             };
             setResult(data => [...data,obj]);
