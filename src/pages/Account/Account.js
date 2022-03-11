@@ -25,7 +25,6 @@ const Account = () => {
         }
     }
 
-
     useEffect(() => {
         getBalanceOf()
     }, [])
