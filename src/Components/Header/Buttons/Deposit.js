@@ -8,7 +8,8 @@ const config = getConfig('testnet')
 
 const Deposit = ({ item }) => {
   const [show, setShow] = useState(false);
-  const [amountDeposit, setAmountDeposit] = useState();
+  const [amountDeposit, setAmountDeposit] = useState('');
+  console.log(item);
   const handleClose = () => setShow(false);
   const tokenContract = window.tokenContract;
 
@@ -50,7 +51,7 @@ const Deposit = ({ item }) => {
     // console.log('s', data);
     await tokenContract.ft_transfer_call({
       receiver_id: config.contractName,
-      amount: amountDeposit,
+      amount: `${amountDeposit}00000000`,
       msg: ""
     },
     "300000000000000",
@@ -64,21 +65,21 @@ const Deposit = ({ item }) => {
 
     const transactions = [];
 
-    transactions.unshift({
-      receiverId: token,
-      functionCalls: [
-        {
-          methodName: 'ft_transfer_call',
-          args: {
-            receiver_id: configContract,
-            amount: amount * 10 ** decimals,
-            msg,
-          },
-          amount: ONE_YOCTO_NEAR,
-          gas: gasFee,
-        },
-      ],
-    });
+    // transactions.unshift({
+    //   receiverId: token,
+    //   functionCalls: [
+    //     {
+    //       methodName: 'ft_transfer_call',
+    //       args: {
+    //         receiver_id: configContract,
+    //         amount: amount,
+    //         msg,
+    //       },
+    //       amount: ONE_YOCTO_NEAR,
+    //       gas: gasFee,
+    //     },
+    //   ],
+    // });
   
     const test = await ftTransferCall();
     // console.log('list transaction', transactions);
@@ -87,7 +88,6 @@ const Deposit = ({ item }) => {
       token,
       configContract
     );
-    // console.log('exchange', exchangeBalanceAtFt);
     if (!exchangeBalanceAtFt) {
       transactions.unshift({
         receiverId: token,
@@ -105,8 +105,6 @@ const Deposit = ({ item }) => {
       });
     }
   }
-
-  const [amount, setAmount] = useState(0)
 
   const handleChange = (e) => {
     console.log(e.target.value);
