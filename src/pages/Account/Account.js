@@ -2,6 +2,7 @@ import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState} from 'react';
 import Deposit from '../../Components/Header/Buttons/Deposit'
+import axios from 'axios';
 
 const Account = () => {
     const [result, setResult] = useState([])
@@ -26,8 +27,20 @@ const Account = () => {
         }
     }
 
-    useEffect(() => {
-        getBalanceOf()
+    useEffect(async () => {
+        getBalanceOf();
+        // await axios.get("http://localhost:5000/token").then(rep => console.log('rep', rep.data));
+        // await axios.post("http://localhost:5000/token", {
+        //     name: "Haha token",
+        //     id: "123",
+        //     value: {
+        //         id: "123",
+        //         name: "haha token",
+        //         symbol: result.symbol,
+        //         decimals: result.decimals,
+        //         icon: ""
+        //     }
+        // }).then(rep => console.log('rep', rep.data.result));
     }, [])
     
     return (
@@ -54,7 +67,7 @@ const Account = () => {
                                     <td>{item.id}</td>
                                     <td>{item.balance * 10 **-8}</td>
                                     <td>
-                                        <Deposit item={item} />
+                                        <Deposit item={item} tokens={result}/>
                                     </td>
                                 </tr>
                             )

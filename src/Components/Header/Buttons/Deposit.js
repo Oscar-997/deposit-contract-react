@@ -1,15 +1,13 @@
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import React, { useState } from 'react';
-import { functionCall } from 'near-api-js/lib/transaction';
-import { getConfig } from "../../../services/config"
+import { getConfig } from '../../../services/config';
+import { executeMultipleTransactions } from '../../../services/near';
 
 const config = getConfig('testnet')
 
-
-const Deposit = ({ item }) => {
+const Deposit = ({ item, tokens }) => {
   const [show, setShow] = useState(false);
   const [amountDeposit, setAmountDeposit] = useState('');
-  console.log(item);
   const handleClose = () => setShow(false);
   const tokenContract = window.tokenContract;
 
@@ -56,58 +54,46 @@ const Deposit = ({ item }) => {
     },
     "300000000000000",
     "1"
-    ).then(rep => console.log('rep', rep));
+    )
   }
 
 
-  const deposit = async (token, amount, msg) => {
-    const gasFee = '100000000000000';
+  const deposit = async({ amount, id }) => {
+    let transactions = [];
 
-    const transactions = [];
-
-    // transactions.unshift({
-    //   receiverId: token,
-    //   functionCalls: [
-    //     {
-    //       methodName: 'ft_transfer_call',
-    //       args: {
-    //         receiver_id: configContract,
-    //         amount: amount,
-    //         msg,
-    //       },
-    //       amount: ONE_YOCTO_NEAR,
-    //       gas: gasFee,
-    //     },
-    //   ],
-    // });
-  
-    const test = await ftTransferCall();
-    // console.log('list transaction', transactions);
-
-    const exchangeBalanceAtFt = await ftGetStorageBalance(
-      token,
-      configContract
-    );
-    if (!exchangeBalanceAtFt) {
-      transactions.unshift({
-        receiverId: token,
+    transactions.unshift({
+        receiverId: id,
         functionCalls: [
           {
-            methodName: 'storage_deposit',
+            methodName: 'ft_transfer_call',
             args: {
-              account_id: configContract,
-              registration_only: true,
+              receiver_id: config.contractName,
+              amount: (10**decimals * amount).toString(),
+              msg: '',
             },
-            amount: STORAGE_TO_REGISTER_WITH_FT,
-            gas: '30000000000000',
+            amount: "1",
+            gas: "100000000000000",
           },
         ],
-      });
+    })
+    if(tokens.filter(t => t.id === id).length === 0) {
+        transactions.unshift({
+            receiverId: id,
+            functionCalls: [
+                {
+                    methodName: 'storage_deposit',
+                    args: {
+                        account_id: config.contractName 
+                    },
+                    amount: "0.0125",
+                    gas: "100000000000000",
+                },
+            ]
+        })
     }
+    return executeMultipleTransactions(transactions)
   }
-
   const handleChange = (e) => {
-    console.log(e.target.value);
     setAmountDeposit(e.target.value);
   }
 
@@ -137,7 +123,7 @@ const Deposit = ({ item }) => {
           </InputGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => deposit(item.id, amountDeposit, "")}>
+          <Button variant="primary" onClick={() => deposit({ id: item.id, amount: item.balance })}>
             Deposit
           </Button>
           <Button variant="danger" onClick={handleClose}>
