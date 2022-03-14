@@ -2,7 +2,6 @@ import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState} from 'react';
 import Deposit from '../../Components/Header/Buttons/Deposit'
-import axios from 'axios';
 
 const Account = () => {
     const [result, setResult] = useState([])
@@ -14,7 +13,6 @@ const Account = () => {
         const depo = await contract.get_deposits({ account_id: accountId })
         
         for (let i in depo) {
-
             let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
             const obj = {
                 id: i,
@@ -27,7 +25,7 @@ const Account = () => {
         }
     }
 
-    useEffect(async () => {
+    useEffect(() => {
         getBalanceOf();
         // await axios.get("http://localhost:5000/token").then(rep => console.log('rep', rep.data));
         // await axios.post("http://localhost:5000/token", {
@@ -67,7 +65,7 @@ const Account = () => {
                                     <td>{item.id}</td>
                                     <td>{item.balance * 10 **-8}</td>
                                     <td>
-                                        <Deposit item={item} tokens={result}/>
+                                        <Deposit item={item}/>
                                     </td>
                                 </tr>
                             )

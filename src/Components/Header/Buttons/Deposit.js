@@ -1,11 +1,10 @@
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { getConfig } from '../../../services/config';
-import { executeMultipleTransactions } from '../../../services/near';
 
 const config = getConfig('testnet')
 
-const Deposit = ({ item, tokens }) => {
+const Deposit = ({ item }) => {
   const [show, setShow] = useState(false);
   const [amountDeposit, setAmountDeposit] = useState('');
   const handleClose = () => setShow(false);
@@ -19,7 +18,6 @@ const Deposit = ({ item, tokens }) => {
   const configContract = 'dev-1646701624418-65193707375662'
   const ONE_YOCTO_NEAR = '0.000000000000000000000001';
   const decimals = item.decimals;
-  const STORAGE_TO_REGISTER_WITH_FT = '0.1';
 
   const ftViewFunction = async (
     tokenId,
@@ -76,7 +74,14 @@ const Deposit = ({ item, tokens }) => {
           },
         ],
     })
-    if(tokens.filter(t => t.id === id).length === 0) {
+
+    ftTransferCall()
+
+    const exchangeBalanceAtFt = await ftGetStorageBalance(
+      id,
+    );
+  
+    if (!exchangeBalanceAtFt){
         transactions.unshift({
             receiverId: id,
             functionCalls: [
@@ -91,8 +96,8 @@ const Deposit = ({ item, tokens }) => {
             ]
         })
     }
-    return executeMultipleTransactions(transactions)
   }
+
   const handleChange = (e) => {
     setAmountDeposit(e.target.value);
   }

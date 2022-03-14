@@ -1,7 +1,5 @@
 import { connect, Contract, keyStores, WalletConnection } from 'near-api-js'
 import { getConfig, getConfigToken } from './config'
-import { BN } from "bn.js"
-import { functionCall, createTransaction } from 'near-api-js/lib/transaction'
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'development')
 const nearTokenConfig = getConfigToken(process.env.NODE_ENV || 'development')
@@ -32,28 +30,3 @@ export async function initContract() {
     })
   
 }
-
-export const executeMultipleTransactions = async (transactions) => {
-    const nearTransactions = await Promise.all(
-        transactions.map((t, i) => {
-            return createTransaction({
-                receiverId: t.receiverId,
-                nonce: i + 1,
-                actions: t.functionCalls.map((fc) =>
-                    functionCall(
-                        fc.methodName,
-                        fc.args,
-                        getGas(fc.gas),
-                        getAmount(fc.amount)
-                    )
-                ),
-            });
-        })
-    );
-
-    return window.walletConnection.requestSignTransactions(nearTransactions);
-};
-
-export const getGas = (gas) => Buffer.from(new BN('100000000000000'))
-
-export const getAmount = (amount) => amount ? Buffer.from(new BN("100000000000000")) : Buffer.from(new BN('0'))
