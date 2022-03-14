@@ -59,16 +59,16 @@ export function getConfig(env) {
   }
 }
 
-export const CONTRACT_TOKEN = 'dev-1646016017833-35518700368629'
+export const CONTRACT_TOKEN = 'dev-1646033285029-67055777163078'
 
-export function getConfigToken(env){
+export function getConfigToken(env, token){
   switch (env) {
     case 'production':
     case 'mainnet':
       return {
         networkId: 'mainnet',
         nodeUrl: 'https://rpc.mainnet.near.org',
-        contractName: CONTRACT_TOKEN,
+        contractName: token,
         walletUrl: 'https://wallet.near.org',
         helperUrl: 'https://helper.mainnet.near.org',
         explorerUrl: 'https://explorer.mainnet.near.org',
@@ -78,7 +78,7 @@ export function getConfigToken(env){
       return {
         networkId: 'testnet',
         nodeUrl: 'https://rpc.testnet.near.org',
-        contractName: CONTRACT_TOKEN,
+        contractName: token,
         walletUrl: 'https://wallet.testnet.near.org',
         helperUrl: 'https://helper.testnet.near.org',
         explorerUrl: 'https://explorer.testnet.near.org',
@@ -87,7 +87,7 @@ export function getConfigToken(env){
       return {
         networkId: 'betanet',
         nodeUrl: 'https://rpc.betanet.near.org',
-        contractName: CONTRACT_TOKEN,
+        contractName: token,
         walletUrl: 'https://wallet.betanet.near.org',
         helperUrl: 'https://helper.betanet.near.org',
         explorerUrl: 'https://explorer.betanet.near.org',
@@ -98,21 +98,21 @@ export function getConfigToken(env){
         nodeUrl: 'http://localhost:2000',
         keyPath: `${process.env.HOME}/.near/validator_key.json`,
         walletUrl: 'http://localhost:2000/wallet',
-        contractName: CONTRACT_TOKEN,
+        contractName: token,
       }
     case 'test':
     case 'ci':
       return {
         networkId: 'shared-test',
         nodeUrl: 'https://rpc.ci-testnet.near.org',
-        contractName: CONTRACT_TOKEN,
+        contractName: token,
         masterAccount: 'test.near',
       }
     case 'ci-betanet':
       return {
         networkId: 'shared-test-staging',
         nodeUrl: 'https://rpc.ci-betanet.near.org',
-        contractName: CONTRACT_TOKEN,
+        contractName: token,
         masterAccount: 'test.near',
       }
     default:

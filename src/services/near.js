@@ -28,5 +28,13 @@ export async function initContract() {
       viewMethods: ['ft_total_supply', 'ft_balance_of'],
       changeMethods: ['ft_transfer', 'ft_transfer_call']
     })
-  
+}
+
+
+
+export const CreateContract = async (name, viewMethods, changeMethods) => {
+    return new Contract(window.walletConnection.account(), name, {
+      viewMethods,
+      changeMethods
+    })
 }

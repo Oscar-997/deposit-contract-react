@@ -8,7 +8,7 @@ import AuthContextProvider from "./context/authContext"
 
 window.Buffer = window.Buffer || Buffer
 
-initContract().then(() => {
+// initContract().then(() => {
   ReactDOM.render(
     <StrictMode>
       <AuthContextProvider>
@@ -19,4 +19,4 @@ initContract().then(() => {
     </StrictMode>,
     document.getElementById('root')
   )
-})
+// })

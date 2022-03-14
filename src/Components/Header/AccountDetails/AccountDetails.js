@@ -4,6 +4,8 @@ import ButtonViewAccount from "../Buttons/ButtonViewAccount"
 import { login, logout } from '../../../services/near'
 import { useContext } from 'react'
 import { AuthContext } from '../../../context/authContext'
+// import { useNear } from "../../../hooks/useNear"
+// import {config} from "./config"
 
 const DetailCover = styled.div`
     display: flex;
@@ -12,16 +14,18 @@ const DetailCover = styled.div`
     align-items: center;
     justify-self: flex-end;
     `
-    
-    const DetailFlex = styled.div`
+
+const DetailFlex = styled.div`
     display: flex;
     -webkit-box-align: center;
     align-items: center;
     gap: 5px;
     `
-    const AccountDetails = () => {
-        
-        const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext)
+const AccountDetails = () => {
+    // const nearConfig = getConfig(process.env.NODE_ENV || 'development');
+    // const { getNear } = useNear();
+
+    const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext)
 
     const login = () => {
         window.walletConnection.requestSignIn()

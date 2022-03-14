@@ -1,19 +1,23 @@
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
-import React, { useState } from 'react';
-import { getConfig } from '../../../services/config';
+import React, { useEffect, useState } from 'react';
+import { getConfig, getConfigToken } from '../../../services/config';
+import { useNear } from '../../../hooks/useNear';
+import { Contract } from 'near-api-js';
 
-const config = getConfig('testnet')
 
 const Deposit = ({ item }) => {
   const [show, setShow] = useState(false);
   const [amountDeposit, setAmountDeposit] = useState('');
   const handleClose = () => setShow(false);
   const tokenContract = window.tokenContract;
-
+  const idContract = window.contract;
+  const { getNear } = useNear();
   const handleShow = () => {
     setShow(true)
   };
 
+  const config = getConfig('testnet',)
+  const configToken = getConfigToken('testnet', item.id);
 
   const configContract = 'dev-1646701624418-65193707375662'
   const ONE_YOCTO_NEAR = '0.000000000000000000000001';
@@ -43,6 +47,24 @@ const Deposit = ({ item }) => {
     });
   };
 
+
+  const testing = async () => {
+    const walletConnection = await getNear(configToken);
+    const tokenContractt = new Contract(walletConnection.account(), item.id, {
+      viewMethods: ['ft_total_supply', 'ft_balance_of'],
+      changeMethods: ['ft_transfer', 'ft_transfer_call']
+    });
+    await tokenContractt.ft_transfer_call({
+      receiver_id: config.contractName,
+      amount: `${amountDeposit}00000000`,
+      msg: ""
+    },
+      "300000000000000",
+      "1"
+    ).then(rep => console.log(rep));
+    
+  }
+
   const ftTransferCall = async () => {
     // console.log('s', data);
     await tokenContract.ft_transfer_call({
@@ -50,58 +72,72 @@ const Deposit = ({ item }) => {
       amount: `${amountDeposit}00000000`,
       msg: ""
     },
-    "300000000000000",
-    "1"
+      "300000000000000",
+      "1"
     )
   }
 
+  // const storageDeposit = async () => {
+  //   await idContract.storage_deposit({
+  //     account_id: 
+  //   })
+  // }
 
-  const deposit = async({ amount, id }) => {
+
+
+  const deposit = async ({ amount, id }) => {
     let transactions = [];
 
     transactions.unshift({
-        receiverId: id,
-        functionCalls: [
-          {
-            methodName: 'ft_transfer_call',
-            args: {
-              receiver_id: config.contractName,
-              amount: (10**decimals * amount).toString(),
-              msg: '',
-            },
-            amount: "1",
-            gas: "100000000000000",
+      receiverId: id,
+      functionCalls: [
+        {
+          methodName: 'ft_transfer_call',
+          args: {
+            receiver_id: config.contractName,
+            amount: (10 ** decimals * amount).toString(),
+            msg: '',
           },
-        ],
+          amount: "1",
+          gas: "100000000000000",
+        },
+      ],
     })
 
-    ftTransferCall()
+    await testing()
+
+    // await ftTransferCall();
 
     const exchangeBalanceAtFt = await ftGetStorageBalance(
       id,
     );
-  
-    if (!exchangeBalanceAtFt){
-        transactions.unshift({
-            receiverId: id,
-            functionCalls: [
-                {
-                    methodName: 'storage_deposit',
-                    args: {
-                        account_id: config.contractName 
-                    },
-                    amount: "0.0125",
-                    gas: "100000000000000",
-                },
-            ]
-        })
+
+    if (!exchangeBalanceAtFt) {
+      transactions.unshift({
+        receiverId: id,
+        functionCalls: [
+          {
+            methodName: 'storage_deposit',
+            args: {
+              account_id: config.contractName
+            },
+            amount: "0.0125",
+            gas: "100000000000000",
+          },
+        ]
+      })
     }
+
+
   }
 
   const handleChange = (e) => {
     setAmountDeposit(e.target.value);
   }
 
+  // useEffect(async () => {
+  //   await testing();
+  // }, []);
 
   return (
     <>
