@@ -18,6 +18,7 @@ const Account = () => {
 
     const getBalanceOf = async () => {
         let depo = await contract.get_deposits({ account_id: accountId })
+        console.log(depo);
         const tokens = await fetch(
             `${config.helperUrl}/account/${accountId}/likelyTokens`
         )
@@ -36,17 +37,18 @@ const Account = () => {
             }
 
             let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
-            console.log('here', metaData);
+            // console.log('here', metaData);
             obj = {
                 id: i,
                 name: metaData.name,
-                balanceAccount: balanceOfWallet * (10 ** -8),
+                balanceAccount: balanceOfWallet,
                 symbol: metaData.symbol,
+                decimals: metaData.decimals,
             }
 
             for (let i2 in depo) {
                 if (i === i2) {
-                    obj.balanceContract = depo[i] * (10 ** -8)
+                    obj.balanceContract = depo[i]
                 }
             }
             setResult((data) => [...data, obj]);
@@ -55,52 +57,52 @@ const Account = () => {
     }
 
 
-    const testing = async () => {
-        const walletConnection = await getNear(config);
-        const account = await walletConnection.getAccountId()
+    // const testing = async () => {
+    //     const walletConnection = await getNear(config);
+    //     const account = await walletConnection.getAccountId()
 
-        const contract = new Contract(walletConnection.account(), "dev-1646701624418-65193707375662", {
-            viewMethods: ['get_deposits'],
-            changeMethods: ['new', 'create_new_pool', 'add_liquidity'],
-        });
+    //     const contract = new Contract(walletConnection.account(), "dev-1646701624418-65193707375662", {
+    //         viewMethods: ['get_deposits'],
+    //         changeMethods: ['new', 'create_new_pool', 'add_liquidity'],
+    //     });
 
-        const tokens = await fetch(
-            `${config.helperUrl}/account/${account}/likelyTokens`
-        )
-            .then((response) => response.json())
+    //     const tokens = await fetch(
+    //         `${config.helperUrl}/account/${account}/likelyTokens`
+    //     )
+    //         .then((response) => response.json())
 
-        for (let i of tokens) {
-            let balanceOfWallet = await walletConnection.account().viewFunction(i, "ft_balance_of", { account_id: account })
-                .catch((err) => {
-                    return {
-                        isFailed: true
-                    }
-                });
-            if (balanceOfWallet.isFailed) {
-                continue
-            }
+    //     for (let i of tokens) {
+    //         let balanceOfWallet = await walletConnection.account().viewFunction(i, "ft_balance_of", { account_id: account })
+    //             .catch((err) => {
+    //                 return {
+    //                     isFailed: true
+    //                 }
+    //             });
+    //         if (balanceOfWallet.isFailed) {
+    //             continue
+    //         }
 
-            let metaData = await walletConnection.account().viewFunction(i, "ft_metadata")
+    //         let metaData = await walletConnection.account().viewFunction(i, "ft_metadata")
 
-            obj = {
-                id: i,
-                name: metaData.name,
-                balanceAccount: balanceOfWallet * (10 ** -8),
-                symbol: metaData.symbol,
-            }
+    //         obj = {
+    //             id: i,
+    //             name: metaData.name,
+    //             balanceAccount: balanceOfWallet * (10 ** -8),
+    //             symbol: metaData.symbol,
+    //         }
 
-            for (let i2 in contract) {
-                if (i === i2) {
-                    obj.balanceContract = contract[i] * (10 ** -8)
-                }
-            }
-            console.log('123');
-            setResult((data) => [...data, obj]);
-        }
-    }
+    //         for (let i2 in contract) {
+    //             if (i === i2) {
+    //                 obj.balanceContract = contract[i] * (10 ** -8)
+    //             }
+    //         }
+    //         console.log('123');
+    //         setResult((data) => [...data, obj]);
+    //     }
+    // }
     useEffect(() => {
-        testing()
-        // getBalanceOf()
+        // testing()
+        getBalanceOf()
         // await axios.get("http://localhost:5000/token").then(rep => console.log('rep', rep.data));
         // await axios.post("http://localhost:5000/token", {
         //     name: "Haha token",
@@ -114,7 +116,7 @@ const Account = () => {
         //     }
         // }).then(rep => console.log('rep', rep.data.result));
     }, [])
-
+        // console.log(result);
     return (
         <Container fluid>
             <h1>Contract wallet</h1>
@@ -127,6 +129,7 @@ const Account = () => {
                         <th>Token ID</th>
                         <th>Amount in wallet Account</th>
                         <th>Amount in Contract</th>
+                        <th>Decimals</th>
                         <th>Deposit</th>
                     </tr>
                 </thead>
@@ -138,10 +141,11 @@ const Account = () => {
                                 <td>{item.symbol}</td>
                                 <td>{item.name}</td>
                                 <td>{item.id}</td>
-                                <td>{item.balanceAccount ? item.balanceAccount : 0}</td>
-                                <td>{item.balanceContract ? item.balanceContract : 0}</td>
+                                <td>{item.balanceAccount * (10 ** -item.decimals) ? item.balanceAccount * (10 ** -item.decimals) : 0}</td>
+                                <td>{item.balanceContract * (10 ** -item.decimals) ? item.balanceContract * (10 ** -item.decimals) : 0}</td>
+                                <td>{item.decimals}</td>
                                 <td>
-                                    <Deposit item={item} />
+                                    <Deposit item={item}/>
                                 </td>
                             </tr>
                         )

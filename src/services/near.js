@@ -26,15 +26,15 @@ export async function initContract() {
     // for contract token
     window.tokenContract = new Contract(window.walletConnection.account(), nearTokenConfig.contractName,{
       viewMethods: ['ft_total_supply', 'ft_balance_of'],
-      changeMethods: ['ft_transfer', 'ft_transfer_call']
+      changeMethods: ['ft_transfer', 'ft_transfer_call', 'storage_deposit']
     })
 }
 
 
 
-export const CreateContract = async (name, viewMethods, changeMethods) => {
-    return new Contract(window.walletConnection.account(), name, {
-      viewMethods,
-      changeMethods
-    })
-}
+// export const CreateContract = async (name, viewMethods, changeMethods) => {
+//     return new Contract(window.walletConnection.account(), name, {
+//       viewMethods,
+//       changeMethods
+//     })
+// }
