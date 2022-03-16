@@ -16,31 +16,27 @@ const Deposit = ({ item }) => {
   };
 
   const config = getConfig('testnet',)
-  const configToken = getConfigToken('testnet', item.id);
-
-  const configContract = 'dev-1646701624418-65193707375662'
-  const ONE_YOCTO_NEAR = '0.000000000000000000000001';
   const decimals = item.decimals;
   // console.log(decimals);
 
-  const ftViewFunction = async (
-    tokenId,
-    { methodName, args }
-  ) => {
+  // const ftViewFunction = async (
+  //   tokenId,
+  //   { methodName, args }
+  // ) => {
 
-    // console.log('config contract', args);
-    return await window.walletConnection.account(args.account_id).viewFunction(tokenId, methodName, args);
-  };
+  //   // console.log('config contract', args);
+  //   return await window.walletConnection.account(args.account_id).viewFunction(tokenId, methodName, args);
+  // };
 
-  const ftGetStorageBalance = async (
-    tokenId
-    // accountId = configContract
-  ) => {
-    return await ftViewFunction(tokenId, {
-      methodName: 'storage_balance_of',
-      args: { account_id: configContract },
-    });
-  };
+  // const ftGetStorageBalance = async (
+  //   tokenId
+  //   // accountId = configContract
+  // ) => {
+  //   return await ftViewFunction(tokenId, {
+  //     methodName: 'storage_balance_of',
+  //     args: { account_id: configContract },
+  //   });
+  // };
 
 
   // const transferCall = async () => {
@@ -71,74 +67,26 @@ const Deposit = ({ item }) => {
     )
   }
 
-  const storageDeposit = async () => {
-    await tokenContract.storage_deposit({
-      account_id: config.contractName
-    },
-    "300000000000000",
-    "12500000000000000000000",
-    )
-  }
-
-  // const storageDeposit = async () => {
-  //   const walletConnection = await getNear(configToken);
-  //   const tokenContract = new Contract(walletConnection.account(), item.id, {
-  //     viewMethods: ['ft_total_supply', 'ft_balance_of'],
-  //     changeMethods: ['ft_transfer', 'ft_transfer_call', 'storage_deposit']
-  //   });
-
-  //   await tokenContract.storage_deposit({
-  //     account_id: config.contractName,
-  //   },
-  //     "0.0125",
-  //     "100000000000000"
-  //   )
-
-  // }
-
-
-
   const deposit = async ({ amount, id }) => {
-    let transactions = [];
+    // let transactions = [];
 
-    transactions.unshift({
-      receiverId: id,
-      functionCalls: [
-        {
-          methodName: 'ft_transfer_call',
-          args: {
-            receiver_id: config.contractName,
-            amount: (10 ** decimals * amount).toString(),
-            msg: '',
-          },
-          amount: "1",
-          gas: "100000000000000",
-        },
-      ],
-    })
-    // await transferCall()
+    // transactions.unshift({
+    //   receiverId: id,
+    //   functionCalls: [
+    //     {
+    //       methodName: 'ft_transfer_call',
+    //       args: {
+    //         receiver_id: config.contractName,
+    //         amount: (10 ** decimals * amount).toString(),
+    //         msg: '',
+    //       },
+    //       amount: "1",
+    //       gas: "100000000000000",
+    //     },
+    //   ],
+    // })
     
-    ftTransferCall();
-    // const exchangeBalanceAtFt = await ftGetStorageBalance(
-    //   id,
-    // );
-
-    // if (!exchangeBalanceAtFt) {}
-      // transactions.unshift({
-      //   receiverId: id,
-      //   functionCalls: [
-      //     {
-      //       methodName: 'storage_deposit',
-      //       args: {
-      //         account_id: config.contractName
-      //       },
-      //       gas: "100000000000000",
-      //       amount: "0.0125",
-      //     },
-      //   ]
-      // })
-      // await storageDeposit().then((da) => console.log(da))
-      
+    await ftTransferCall();
   }
 
   const handleChange = (e) => {

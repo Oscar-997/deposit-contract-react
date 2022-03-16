@@ -59,7 +59,7 @@ export function getConfig(env) {
   }
 }
 
-export const CONTRACT_TOKEN = 'aurora.fakes.testnet'
+export const CONTRACT_TOKEN = 'paras.fakes.testnet'
 
 export function getConfigToken(env, token){
   switch (env) {

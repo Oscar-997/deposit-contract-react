@@ -2,6 +2,7 @@ import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import Deposit from '../../Components/Header/Buttons/Deposit'
+import Register from '../../Components/Header/Buttons/Register'
 import { getConfig } from '../../services/config';
 import axios from 'axios';
 import { connect, Contract, keyStores, WalletConnection } from 'near-api-js';
@@ -18,7 +19,6 @@ const Account = () => {
 
     const getBalanceOf = async () => {
         let depo = await contract.get_deposits({ account_id: accountId })
-        console.log(depo);
         const tokens = await fetch(
             `${config.helperUrl}/account/${accountId}/likelyTokens`
         )
@@ -44,6 +44,12 @@ const Account = () => {
                 balanceAccount: balanceOfWallet,
                 symbol: metaData.symbol,
                 decimals: metaData.decimals,
+            }
+
+            let storageBalanceOf = await window.walletConnection.account().viewFunction(i, "storage_balance_of", {account_id: config.contractName })
+            
+            if (storageBalanceOf !== null) {
+                obj.checkRegis = true
             }
 
             for (let i2 in depo) {
@@ -116,7 +122,6 @@ const Account = () => {
         //     }
         // }).then(rep => console.log('rep', rep.data.result));
     }, [])
-        // console.log(result);
     return (
         <Container fluid>
             <h1>Contract wallet</h1>
@@ -145,7 +150,9 @@ const Account = () => {
                                 <td>{item.balanceContract * (10 ** -item.decimals) ? item.balanceContract * (10 ** -item.decimals) : 0}</td>
                                 <td>{item.decimals}</td>
                                 <td>
-                                    <Deposit item={item}/>
+                                    {!item.checkRegis && <Register item={item} />}
+                                    {item.checkRegis && <Deposit item={item}/>}
+                    
                                 </td>
                             </tr>
                         )
