@@ -1,6 +1,9 @@
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { getConfig } from '../../../services/config';
+import { functionCall, createTransaction } from 'near-api-js/lib/transaction';
+import { baseDecode } from 'borsh';
+
 
 const Deposit = ({ item }) => {
   const [show, setShow] = useState(false);
@@ -9,12 +12,55 @@ const Deposit = ({ item }) => {
   const handleShow = () => {
     setShow(true)
   };
+  
 
   const config = getConfig('testnet')
   const decimals = item.decimals;
+  const near = window.near;
+  const executeMultipleTransactions = async (transactions) => {
+    console.log(transactions);
+    const tokenTransactions = await Promise.all(
+
+      transactions.map(async (t, i) => {
+        console.log('t', window.accountId);
+        let block = await near.connection.provider.block({ finality: 'final' });
+        console.log('block', block);
+        let blockHash = baseDecode(block.header.hash);
+        return createTransaction(
+          // receiverId: t.receiverId,
+          // nonceOffset: i + 1,
+          // actions: t.functionCalls.map((fc) => {
+          //   functionCall(
+          //     fc.methodName,
+          //     fc.args,
+          //     fc.gas,
+          //     fc.amount
+          //   )
+          // })
+          window.accountId,
+          process.env.REACT_APP_PUBLIC_KEY,
+          t.receiverId.tokenId,
+          i + 1,
+          t.functionCalls.map((fc) => {
+            return functionCall(fc.methodName, fc.args, fc.gas, fc.amount);
+          }),
+          blockHash
+        )
+      })
+    )
+    let actions = [];
+    tokenTransactions.map(item => {
+        actions.push(item.actions[0]);
+    })
+    console.log(tokenTransactions);
+    const account = await window.near.account(window.accountId);
+    await account.signAndSendTransaction({receiverId: tokenTransactions[0].receiverId, actions});
+    console.log(tokenTransactions);
+
+  }
 
 
-  const deposit = async (tokenId, amount , msg) => {
+  const deposit = async (tokenId, amount, msg) => {
     let transactions = [];
 
     transactions.unshift({
@@ -24,18 +70,15 @@ const Deposit = ({ item }) => {
           methodName: 'ft_transfer_call',
           args: {
             receiver_id: config.contractName,
-            amount: (amountDeposit * 10**decimals).toString(),
+            amount: (amountDeposit * 10 ** decimals).toString(),
             msg: "",
           },
           amount: "1",
-          gas: "30000000000000",
+          gas: "100000000000000",
         },
       ],
     });
-  
-    // const exchangeBalanceAtFt = await window.walletConnection.account().viewFunction(tokenId, "storage_balance_of", {account_id: config.contractName})
-    // console.log(exchangeBalanceAtFt);
-  
+
     if (!item.checkRegis) {
       transactions.unshift({
         receiverId: tokenId,
@@ -47,18 +90,20 @@ const Deposit = ({ item }) => {
               registration_only: true,
             },
             amount: "12500000000000000000000",
-            gas: "300000000000000",
+            gas: "100000000000000",
           },
         ],
       });
     }
 
-    return transactions;
+    return executeMultipleTransactions(transactions);
+    // return transactio\ns;
   }
 
-  const handleSubmit = (id,msg) =>{
-    console.log(deposit(id,amountDeposit,msg));
-  }
+  // const handleSubmit = async (id, msg) => {
+  //   deposit(id, amountDeposit, msg);
+  //   // console.log(await deposit(id, amountDeposit, msg));
+  // }
 
   const handleChange = (e) => {
     setAmountDeposit(e.target.value);
@@ -89,7 +134,7 @@ const Deposit = ({ item }) => {
           </InputGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => handleSubmit({ tokenId: item.id, msg: "" })}>
+          <Button variant="primary" onClick={() => deposit({ tokenId: item.id, amountDeposit, msg: "" })}>
             Deposit
           </Button>
           <Button variant="danger" onClick={handleClose}>

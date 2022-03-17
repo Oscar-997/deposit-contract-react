@@ -2,7 +2,6 @@ import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import Deposit from '../../Components/Header/Buttons/Deposit'
-import Register from '../../Components/Header/Buttons/Register'
 import { getConfig } from '../../services/config';
 
 
@@ -16,6 +15,8 @@ const Account = () => {
 
     const getBalanceOf = async () => {
         let depo = await contract.get_deposits({ account_id: accountId })
+        console.log('depo', depo)
+
         const tokens = await fetch(
             `${config.helperUrl}/account/${accountId}/likelyTokens`
         )
@@ -77,7 +78,6 @@ const Account = () => {
                         <th>Amount in wallet Account</th>
                         <th>Amount in Contract</th>
                         <th>Decimals</th>
-                        <th>Register</th>
                         <th>Deposit</th>
                     </tr>
                 </thead>
@@ -92,9 +92,6 @@ const Account = () => {
                                 <td>{item.balanceAccount * (10 ** -item.decimals) ? item.balanceAccount * (10 ** -item.decimals) : 0}</td>
                                 <td>{item.balanceContract * (10 ** -item.decimals) ? item.balanceContract * (10 ** -item.decimals) : 0}</td>
                                 <td>{item.decimals}</td>
-                                <td>
-                                    {!item.checkRegis && <Register item={item} />}
-                                </td>
                                 <td>
                                     <Deposit item={item}/>
                                 </td>

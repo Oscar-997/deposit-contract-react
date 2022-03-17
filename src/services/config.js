@@ -1,5 +1,5 @@
 export const CONTRACT_NAME = process.env.CONTRACT_NAME || 'dev-1646701624418-65193707375662' 
-
+export const ACCOUNT_NAME = process.env.REACT_APP_NAME || 'haha001.testnet';
 export function getConfig(env) {
   switch (env) {
   case 'production':
