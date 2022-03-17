@@ -30,22 +30,22 @@ const Register = () => {
 
   // }
 
-    const registerToken = async (id) => {
-        let transactions = []
+    const registerToken = async () => {
+        // let transactions = []
         
-        transactions.unshift({
-              receiverId: id,
-              functionCalls: [
-                {
-                  methodName: 'storage_deposit',
-                  args: {
-                    account_id: config.contractName
-                  },
-                  gas: "100000000000000",
-                  amount: "0.0125",
-                },
-              ]
-            })
+        // transactions.unshift({
+        //       receiverId: id,
+        //       functionCalls: [
+        //         {
+        //           methodName: 'storage_deposit',
+        //           args: {
+        //             account_id: config.contractName
+        //           },
+        //           gas: "100000000000000",
+        //           amount: "0.0125",
+        //         },
+        //       ]
+        //     })
             await storageDeposit().then((da) => console.log(da))
     }
 
@@ -53,7 +53,7 @@ const Register = () => {
 
     return (
         <>
-        <Button variant="danger" onClick={registerToken}>
+        <Button variant="danger" onClick={storageDeposit}>
             Register
         </Button>
         </>

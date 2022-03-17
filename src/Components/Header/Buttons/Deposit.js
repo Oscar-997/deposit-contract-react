@@ -1,101 +1,68 @@
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
-import React, { useEffect, useState } from 'react';
-import { getConfig, getConfigToken } from '../../../services/config';
-import { useNear } from '../../../hooks/useNear';
-import { Contract } from 'near-api-js';
-
+import React, { useState } from 'react';
+import { getConfig } from '../../../services/config';
 
 const Deposit = ({ item }) => {
   const [show, setShow] = useState(false);
   const [amountDeposit, setAmountDeposit] = useState('');
   const handleClose = () => setShow(false);
-  const { getNear } = useNear();
-  const tokenContract = window.tokenContract
   const handleShow = () => {
     setShow(true)
   };
 
-  const config = getConfig('testnet',)
+  const config = getConfig('testnet')
   const decimals = item.decimals;
-  // console.log(decimals);
-
-  // const ftViewFunction = async (
-  //   tokenId,
-  //   { methodName, args }
-  // ) => {
-
-  //   // console.log('config contract', args);
-  //   return await window.walletConnection.account(args.account_id).viewFunction(tokenId, methodName, args);
-  // };
-
-  // const ftGetStorageBalance = async (
-  //   tokenId
-  //   // accountId = configContract
-  // ) => {
-  //   return await ftViewFunction(tokenId, {
-  //     methodName: 'storage_balance_of',
-  //     args: { account_id: configContract },
-  //   });
-  // };
 
 
-  // const transferCall = async () => {
-  //   const walletConnection = await getNear(configToken);
-  //   const tokenContractt = new Contract(walletConnection.account(), item.id, {
-  //     viewMethods: ['ft_total_supply', 'ft_balance_of'],
-  //     changeMethods: ['ft_transfer', 'ft_transfer_call']
-  //   });
-  //   await tokenContractt.ft_transfer_call({
-  //     receiver_id: config.contractName,
-  //     amount: `${amountDeposit}00000000`,
-  //     msg: ""
-  //   },
-  //     "300000000000000",
-  //     "1"
-  //   ).then(rep => console.log(rep));
-    
-  // }
+  const deposit = async (tokenId, amount , msg) => {
+    let transactions = [];
 
-  const ftTransferCall = async () => {
-    await tokenContract.ft_transfer_call({
-      receiver_id: config.contractName,
-      amount: (amountDeposit*10**decimals).toString(),
-      msg: ""
-    },
-      "300000000000000",
-      "1"
-    )
+    transactions.unshift({
+      receiverId: tokenId,
+      functionCalls: [
+        {
+          methodName: 'ft_transfer_call',
+          args: {
+            receiver_id: config.contractName,
+            amount: (amountDeposit * 10**decimals).toString(),
+            msg: "",
+          },
+          amount: "1",
+          gas: "30000000000000",
+        },
+      ],
+    });
+  
+    // const exchangeBalanceAtFt = await window.walletConnection.account().viewFunction(tokenId, "storage_balance_of", {account_id: config.contractName})
+    // console.log(exchangeBalanceAtFt);
+  
+    if (!item.checkRegis) {
+      transactions.unshift({
+        receiverId: tokenId,
+        functionCalls: [
+          {
+            methodName: 'storage_deposit',
+            args: {
+              account_id: config.contractName,
+              registration_only: true,
+            },
+            amount: "12500000000000000000000",
+            gas: "300000000000000",
+          },
+        ],
+      });
+    }
+
+    return transactions;
   }
 
-  const deposit = async ({ amount, id }) => {
-    // let transactions = [];
-
-    // transactions.unshift({
-    //   receiverId: id,
-    //   functionCalls: [
-    //     {
-    //       methodName: 'ft_transfer_call',
-    //       args: {
-    //         receiver_id: config.contractName,
-    //         amount: (10 ** decimals * amount).toString(),
-    //         msg: '',
-    //       },
-    //       amount: "1",
-    //       gas: "100000000000000",
-    //     },
-    //   ],
-    // })
-    
-    await ftTransferCall();
+  const handleSubmit = (id,msg) =>{
+    console.log(deposit(id,amountDeposit,msg));
   }
 
   const handleChange = (e) => {
     setAmountDeposit(e.target.value);
   }
-
-  // useEffect(async () => {
-  //   await testing();
-  // }, []);
 
   return (
     <>
@@ -122,7 +89,7 @@ const Deposit = ({ item }) => {
           </InputGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => deposit({ id: item.id, amount: item.balance })}>
+          <Button variant="primary" onClick={() => handleSubmit({ tokenId: item.id, msg: "" })}>
             Deposit
           </Button>
           <Button variant="danger" onClick={handleClose}>

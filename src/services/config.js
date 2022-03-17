@@ -59,7 +59,7 @@ export function getConfig(env) {
   }
 }
 
-export const CONTRACT_TOKEN = 'paras.fakes.testnet'
+export const CONTRACT_TOKEN = 'kietsub1.kietne.testnet'
 
 export function getConfigToken(env, token){
   switch (env) {

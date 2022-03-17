@@ -1,10 +1,8 @@
 import styled from "styled-components/macro"
 import { Button } from "react-bootstrap"
 import ButtonViewAccount from "../Buttons/ButtonViewAccount"
-import { login, logout } from '../../../services/near'
 import { useContext } from 'react'
 import { AuthContext } from '../../../context/authContext'
-import { getConfig } from "../../../services/config"
 // import { useNear } from "../../../hooks/useNear"
 // import {config} from "./config"
 
@@ -25,33 +23,12 @@ const DetailFlex = styled.div`
 const AccountDetails = () => {
     // const nearConfig = getConfig(process.env.NODE_ENV || 'development');
     // const { getNear } = useNear();
-    const accountId = window.accountId
-    const config = getConfig('testnet')
-    const contract = window.contract
-    
+
 
     const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext)
 
-    const storageDeposit = async () => {
-        await contract.storage_deposit({
-          account_id: accountId
-        },
-        "300000000000000",
-        "12500000000000000000000",
-        )
-      }
-
-    const registerAccount = async () => {
-        let storageBalanceOf = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", {account_id: accountId})
-        console.log(storageBalanceOf)
-        if (storageBalanceOf == null) {
-           await storageDeposit()
-        }
-    }
-
     const login = async () => {
-        window.walletConnection.requestSignIn()
-        await registerAccount()
+        await window.walletConnection.requestSignIn()
     }
 
     const logout = () => {
@@ -68,7 +45,7 @@ const AccountDetails = () => {
                 {!isLoggedIn && <Button onClick={login}>Connect to NEAR wallet</Button>}
                 {isLoggedIn &&
                     <>
-                        <Button variant="info">{window.accountId}</Button>
+                        <Button variant="info">Account name: {window.accountId}</Button>
                         <ButtonViewAccount></ButtonViewAccount>
                         <Button variant="dark" onClick={logout}> Logout</Button>
                     </>}
