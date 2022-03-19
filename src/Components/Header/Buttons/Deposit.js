@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { getConfig } from '../../../services/config';
 import { functionCall, createTransaction } from 'near-api-js/lib/transaction';
 import { baseDecode } from 'borsh';
+import { PublicKey } from 'near-api-js/lib/utils';
 
 
 const Deposit = ({ item }) => {
@@ -12,33 +13,36 @@ const Deposit = ({ item }) => {
   const handleShow = () => {
     setShow(true)
   };
-  
 
+  const getAccount = async () => {
+    const account = await window.near.account(window.accountId);
+    console.log(account);
+  }
+  const wallet = window.walletConnection
   const config = getConfig('testnet')
   const decimals = item.decimals;
   const near = window.near;
-  const executeMultipleTransactions = async (transactions) => {
-    console.log(transactions);
-    const tokenTransactions = await Promise.all(
+  const getAccessKey = async () =>{
+    const account = await window.near.account(window.accountId)
+    const accessK = await account.getAccessKeys();
+    console.log(accessK[0]);
+    return accessK[0].public_key;
+  }
 
+
+  const executeMultipleTransactions = async function (transactions){
+   // get public key
+   const publicKeyGet = await getAccessKey();
+   const pubKey = PublicKey.from(publicKeyGet)
+   console.log( getAccessKey());
+    const tokenTransactions = await Promise.all(
       transactions.map(async (t, i) => {
-        console.log('t', window.accountId);
+        // get block hash
         let block = await near.connection.provider.block({ finality: 'final' });
-        console.log('block', block);
         let blockHash = baseDecode(block.header.hash);
         return createTransaction(
-          // receiverId: t.receiverId,
-          // nonceOffset: i + 1,
-          // actions: t.functionCalls.map((fc) => {
-          //   functionCall(
-          //     fc.methodName,
-          //     fc.args,
-          //     fc.gas,
-          //     fc.amount
-          //   )
-          // })
           window.accountId,
-          process.env.REACT_APP_PUBLIC_KEY,
+          pubKey,
           t.receiverId.tokenId,
           i + 1,
           t.functionCalls.map((fc) => {
@@ -53,14 +57,11 @@ const Deposit = ({ item }) => {
         actions.push(item.actions[0]);
     })
     console.log(tokenTransactions);
-    const account = await window.near.account(window.accountId);
-    await account.signAndSendTransaction({receiverId: tokenTransactions[0].receiverId, actions});
-    console.log(tokenTransactions);
-
+    return wallet.requestSignTransactions({transactions: tokenTransactions});
   }
 
 
-  const deposit = async (tokenId, amount, msg) => {
+  const deposit = async (tokenId) => {
     let transactions = [];
 
     transactions.unshift({
@@ -96,9 +97,21 @@ const Deposit = ({ item }) => {
       });
     }
 
-    return executeMultipleTransactions(transactions);
-    // return transactio\ns;
+    return executeMultipleTransactions(transactions)
   }
+
+  // const sendTransactions = async (transactions) => {
+  //   const account = await near.account(config.contractName)
+  //   const result = await account.signAndSendTransaction({
+  //     receiverId: config.contractName,
+  //     actions: [
+  //       transactions.functionCall(
+  //         "ft_transfer_call",
+
+  //       )
+  //     ]
+  //   })
+  // }
 
   // const handleSubmit = async (id, msg) => {
   //   deposit(id, amountDeposit, msg);
@@ -134,11 +147,14 @@ const Deposit = ({ item }) => {
           </InputGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => deposit({ tokenId: item.id, amountDeposit, msg: "" })}>
+          <Button variant="primary" onClick={() => deposit({tokenId: item.id})}>
             Deposit
           </Button>
           <Button variant="danger" onClick={handleClose}>
             Cancel
+          </Button>
+          <Button variant="danger" onClick={() => getAccessKey()}>
+            Get Access Key
           </Button>
         </Modal.Footer>
       </Modal>

@@ -34,9 +34,7 @@ const AccountDetails = () => {
     const logout = () => {
         window.walletConnection.signOut()
         setIsLoggedIn(false)
-        /*global event, fdescribe*/
-        /*eslint no-restricted-globals: ["error", "event", "fdescribe"]*/
-        location.reload()
+        window.location.reload()
     }
 
     return (
