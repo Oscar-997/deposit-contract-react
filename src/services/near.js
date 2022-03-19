@@ -2,7 +2,6 @@ import { connect, Contract, keyStores, transactions, utils, WalletConnection } f
 import { getConfig, getConfigToken } from './config'
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'development')
-const nearTokenConfig = getConfigToken(process.env.NODE_ENV || 'development')
 // Initialize contract & set global variables
 export async function initContract() {
     // const keyPair = utils.KeyPair.fromString(process.env.REACT_APP_PRIVATE_KEY);
@@ -18,11 +17,6 @@ export async function initContract() {
     window.contract = new Contract(window.walletConnection.account(), nearConfig.contractName, {
       viewMethods: ['get_deposits', "storage_balance_of"],
       changeMethods: ['new', 'create_new_pool', 'add_liquidity', 'storage_deposit'],
-    })
-    // for contract token
-    window.tokenContract = new Contract(window.walletConnection.account(), nearTokenConfig.contractName,{
-      viewMethods: ['ft_total_supply', 'ft_balance_of'],
-      changeMethods: ['ft_transfer', 'ft_transfer_call', 'storage_deposit']
     })
 }
 

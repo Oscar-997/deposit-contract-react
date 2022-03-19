@@ -9,24 +9,29 @@ import { PublicKey } from 'near-api-js/lib/utils';
 const Deposit = ({ item }) => {
   const [show, setShow] = useState(false);
   const [amountDeposit, setAmountDeposit] = useState('');
+  const [state, setState] = useState(null)
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true)
   };
-
-  const getAccount = async () => {
-    const account = await window.near.account(window.accountId);
-    console.log(account);
-  }
   const wallet = window.walletConnection
   const config = getConfig('testnet')
   const decimals = item.decimals;
   const near = window.near;
+
+  // check Account for contract
+  const checkAccToContract = async() => {
+    let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", {account_id: window.accountId})
+    console.log(checkAcc);
+    setState(checkAcc)
+  }
+
+  // get localKey
   const getAccessKey = async () =>{
-    const account = await window.near.account(window.accountId)
-    const accessK = await account.getAccessKeys();
-    console.log(accessK[0]);
-    return accessK[0].public_key;
+    const accountInfor = JSON.parse(localStorage.getItem("undefined_wallet_auth_key"));
+    const localKey = accountInfor.allKeys[0];
+      console.log(localKey);
+    return localKey
   }
 
 
@@ -34,16 +39,16 @@ const Deposit = ({ item }) => {
    // get public key
    const publicKeyGet = await getAccessKey();
    const pubKey = PublicKey.from(publicKeyGet)
-   console.log( getAccessKey());
     const tokenTransactions = await Promise.all(
       transactions.map(async (t, i) => {
         // get block hash
         let block = await near.connection.provider.block({ finality: 'final' });
         let blockHash = baseDecode(block.header.hash);
+        console.log(t.receiverId);
         return createTransaction(
           window.accountId,
           pubKey,
-          t.receiverId.tokenId,
+          t.receiverId,
           i + 1,
           t.functionCalls.map((fc) => {
             return functionCall(fc.methodName, fc.args, fc.gas, fc.amount);
@@ -97,6 +102,23 @@ const Deposit = ({ item }) => {
       });
     }
 
+    if (state === null) {
+      transactions.unshift({
+        receiverId: config.contractName,
+        functionCalls: [
+          {
+            methodName: 'storage_deposit',
+            args: {
+              registration_only: true,
+            },
+            amount: "12500000000000000000000",
+            gas: "100000000000000",
+          }
+        ]
+      })
+    }
+
+    
     return executeMultipleTransactions(transactions)
   }
 
@@ -147,14 +169,14 @@ const Deposit = ({ item }) => {
           </InputGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => deposit({tokenId: item.id})}>
+          <Button variant="primary" onClick={() => deposit(item.id)}>
             Deposit
           </Button>
           <Button variant="danger" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={() => getAccessKey()}>
-            Get Access Key
+          <Button variant="danger" onClick={() => checkAccToContract()}>
+            check account 
           </Button>
         </Modal.Footer>
       </Modal>

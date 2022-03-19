@@ -15,6 +15,7 @@ const Account = () => {
     let obj = {};
     const contract = window.contract;
     const accountId = window.accountId;
+    
 
     const getBalanceOf = async () => {
         
@@ -64,7 +65,6 @@ const Account = () => {
         }
 
     }
-
 
     useEffect(() => {
         getBalanceOf()
