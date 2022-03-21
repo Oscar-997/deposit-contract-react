@@ -17,6 +17,7 @@ const Account = () => {
     const accountId = window.accountId;
     
 
+
     const getBalanceOf = async () => {
         
         

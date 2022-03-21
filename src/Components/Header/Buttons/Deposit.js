@@ -1,10 +1,11 @@
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getConfig } from '../../../services/config';
 import { functionCall, createTransaction } from 'near-api-js/lib/transaction';
 import { baseDecode } from 'borsh';
+import {utils} from 'near-api-js';
 import { PublicKey } from 'near-api-js/lib/utils';
-
+import { BN } from 'bn.js'
 
 const Deposit = ({ item }) => {
   const [show, setShow] = useState(false);
@@ -22,9 +23,14 @@ const Deposit = ({ item }) => {
   // check Account for contract
   const checkAccToContract = async() => {
     let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", {account_id: window.accountId})
-    console.log(checkAcc);
+    console.log("Check Account balance: ",checkAcc);
+    // return checkAcc
     setState(checkAcc)
   }
+
+  useEffect(() => {
+    checkAccToContract()
+  }, [])
 
   // get localKey
   const getAccessKey = async () =>{
@@ -34,6 +40,11 @@ const Deposit = ({ item }) => {
     return localKey
   }
 
+
+  const getGas = (gas) =>
+  gas ? new BN(gas) : new BN('100000000000000');
+  const getAmount = (amount) =>
+  amount ? new BN(utils.format.parseNearAmount(amount)) : new BN('0');
 
   const executeMultipleTransactions = async function (transactions){
    // get public key
@@ -51,16 +62,12 @@ const Deposit = ({ item }) => {
           t.receiverId,
           i + 1,
           t.functionCalls.map((fc) => {
-            return functionCall(fc.methodName, fc.args, fc.gas, fc.amount);
+            return functionCall(fc.methodName, fc.args, getGas(fc.gas), getAmount(fc.amount));
           }),
           blockHash
         )
       })
     )
-    let actions = [];
-    tokenTransactions.map(item => {
-        actions.push(item.actions[0]);
-    })
     console.log(tokenTransactions);
     return wallet.requestSignTransactions({transactions: tokenTransactions});
   }
@@ -79,7 +86,7 @@ const Deposit = ({ item }) => {
             amount: (amountDeposit * 10 ** decimals).toString(),
             msg: "",
           },
-          amount: "1",
+          amount: "0.000000000000000000000001",
           gas: "100000000000000",
         },
       ],
@@ -95,13 +102,13 @@ const Deposit = ({ item }) => {
               account_id: config.contractName,
               registration_only: true,
             },
-            amount: "12500000000000000000000",
+            amount: "0.0125",
             gas: "100000000000000",
           },
         ],
       });
     }
-
+    //12500000000000000000000
     if (state === null) {
       transactions.unshift({
         receiverId: config.contractName,
@@ -109,16 +116,16 @@ const Deposit = ({ item }) => {
           {
             methodName: 'storage_deposit',
             args: {
-              registration_only: true,
+              registration_only: false,
             },
-            amount: "12500000000000000000000",
+            amount: "0.1",
             gas: "100000000000000",
           }
         ]
       })
     }
 
-    
+    //125000000000000000000000
     return executeMultipleTransactions(transactions)
   }
 
