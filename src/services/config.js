@@ -1,4 +1,4 @@
-export const CONTRACT_NAME = process.env.CONTRACT_NAME || 'dev-1647830649715-26360566486356';
+export const CONTRACT_NAME = process.env.CONTRACT_NAME || 'dev-1648114907144-41770480251947';
 export function getConfig(env) {
   switch (env) {
   case 'production':
@@ -33,9 +33,9 @@ export function getConfig(env) {
   case 'local':
     return {
       networkId: 'local',
-      nodeUrl: 'http://localhost:2000',
+      nodeUrl: 'http://localhost:8000',
       keyPath: `${process.env.HOME}/.near/validator_key.json`,
-      walletUrl: 'http://localhost:2000/wallet',
+      walletUrl: 'http://localhost:8000/wallet',
       contractName: CONTRACT_NAME,
     }
   case 'test':

@@ -2,9 +2,8 @@ import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import Deposit from '../../Components/Header/Buttons/Deposit'
+import Withdraw from '../../Components/Header/Buttons/Withdraw';
 import { getConfig } from '../../services/config';
-// import { useNear } from '../../hooks/useNear';
-
 
 
 const config = getConfig('testnet')
@@ -16,11 +15,8 @@ const Account = () => {
     const contract = window.contract;
     const accountId = window.accountId;
     
-
-
     const getBalanceOf = async () => {
-        
-        
+    
         let depo = await contract.get_deposits({ account_id: accountId })
 
         const tokens = await fetch(
@@ -84,6 +80,7 @@ const Account = () => {
                         <th>Amount in Contract</th>
                         <th>Decimals</th>
                         <th>Deposit</th>
+                        <th>Withdraw</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -99,6 +96,9 @@ const Account = () => {
                                 <td>{item.decimals}</td>
                                 <td>
                                     <Deposit item={item}/>
+                                </td>
+                                <td>
+                                    <Withdraw item={item}/>
                                 </td>
                             </tr>
                         )

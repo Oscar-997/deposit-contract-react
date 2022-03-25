@@ -1,5 +1,5 @@
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { getConfig } from '../../../services/config';
 import { functionCall, createTransaction } from 'near-api-js/lib/transaction';
 import { baseDecode } from 'borsh';
@@ -10,7 +10,6 @@ import { BN } from 'bn.js'
 const Deposit = ({ item }) => {
   const [show, setShow] = useState(false);
   const [amountDeposit, setAmountDeposit] = useState('');
-  const [state, setState] = useState(null)
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true)
@@ -24,13 +23,8 @@ const Deposit = ({ item }) => {
   const checkAccToContract = async() => {
     let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", {account_id: window.accountId})
     console.log("Check Account balance: ",checkAcc);
-    // return checkAcc
-    setState(checkAcc)
+    return checkAcc
   }
-
-  useEffect(() => {
-    checkAccToContract()
-  }, [])
 
   // get localKey
   const getAccessKey = async () =>{
@@ -40,11 +34,9 @@ const Deposit = ({ item }) => {
     return localKey
   }
 
+  const getGas = (gas) => gas ? new BN(gas) : new BN('100000000000000');
 
-  const getGas = (gas) =>
-  gas ? new BN(gas) : new BN('100000000000000');
-  const getAmount = (amount) =>
-  amount ? new BN(utils.format.parseNearAmount(amount)) : new BN('0');
+  const getAmount = (amount) => amount ? new BN(utils.format.parseNearAmount(amount)) : new BN('0');
 
   const executeMultipleTransactions = async function (transactions){
    // get public key
@@ -102,14 +94,13 @@ const Deposit = ({ item }) => {
               account_id: config.contractName,
               registration_only: true,
             },
-            amount: "0.0125",
+            amount: "0.00125",
             gas: "100000000000000",
           },
         ],
       });
     }
-    //12500000000000000000000
-    if (state === null) {
+    if (await checkAccToContract() === null) {
       transactions.unshift({
         receiverId: config.contractName,
         functionCalls: [
@@ -125,27 +116,8 @@ const Deposit = ({ item }) => {
       })
     }
 
-    //125000000000000000000000
     return executeMultipleTransactions(transactions)
   }
-
-  // const sendTransactions = async (transactions) => {
-  //   const account = await near.account(config.contractName)
-  //   const result = await account.signAndSendTransaction({
-  //     receiverId: config.contractName,
-  //     actions: [
-  //       transactions.functionCall(
-  //         "ft_transfer_call",
-
-  //       )
-  //     ]
-  //   })
-  // }
-
-  // const handleSubmit = async (id, msg) => {
-  //   deposit(id, amountDeposit, msg);
-  //   // console.log(await deposit(id, amountDeposit, msg));
-  // }
 
   const handleChange = (e) => {
     setAmountDeposit(e.target.value);
@@ -168,8 +140,6 @@ const Deposit = ({ item }) => {
               // aria-label="Default"
               aria-describedby="inputGroup-sizing-default"
               type="number"
-              // value={amount}
-              // onChange={e => setAmount(e.target.value)}
               onChange={handleChange}
             />
 
