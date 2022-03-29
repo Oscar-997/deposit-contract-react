@@ -16,14 +16,14 @@ const Account = () => {
     const accountId = window.accountId;
     
     const getBalanceOf = async () => {
-    
+        
         let depo = await contract.get_deposits({ account_id: accountId })
 
         const tokens = await fetch(
             `${config.helperUrl}/account/${accountId}/likelyTokens`
         )
             .then((response) => response.json())
-            .then((tokens) => tokens);
+            .then((tokens) => tokens)
 
         for (let i of tokens) {
             let balanceOfWallet = await window.walletConnection.account().viewFunction(i, "ft_balance_of", { account_id: accountId })
@@ -63,8 +63,8 @@ const Account = () => {
 
     }
 
-    useEffect(() => {
-        getBalanceOf()
+    useEffect(async () => {
+        await getBalanceOf()
     }, [])
     return (
         <Container fluid>

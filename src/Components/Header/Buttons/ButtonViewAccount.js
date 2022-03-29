@@ -20,6 +20,11 @@ const ButtonViewAccount = () => {
                 Swap
             </Link>
         </Button>
+        <Button variant="info">
+            <Link to={'/pool'} style={{color: 'black', textDecoration: 'none'}}>
+                Pool
+            </Link>
+        </Button>
     </>
     )
 }
