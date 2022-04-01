@@ -64,7 +64,9 @@ const Account = () => {
     }
 
     useEffect(async () => {
-        await getBalanceOf()
+        if (window.walletConnection.isSignedIn()) {
+            await getBalanceOf()
+        }
     }, [])
     return (
         <Container fluid>

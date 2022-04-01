@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { getConfig } from '../../../services/config';
 import { functionCall, createTransaction } from 'near-api-js/lib/transaction';
 import { baseDecode } from 'borsh';
-import {utils} from 'near-api-js';
+import { utils } from 'near-api-js';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { BN } from 'bn.js'
 
@@ -20,28 +20,28 @@ const Deposit = ({ item }) => {
   const near = window.near;
 
   // check Account for contract
-  const checkAccToContract = async() => {
-    let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", {account_id: window.accountId})
-    console.log("Check Account balance: ",checkAcc);
+  const checkAccToContract = async () => {
+    let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", { account_id: window.accountId })
+    console.log("Check Account balance: ", checkAcc);
     return checkAcc
   }
 
   // get localKey
-  const getAccessKey = async () =>{
-    const accountInfor = JSON.parse(localStorage.getItem("undefined_wallet_auth_key"));
-    const localKey = accountInfor.allKeys[0];
-      console.log(localKey);
+  const getAccessKey = async () => {
+    const accountInfo = JSON.parse(localStorage.getItem("undefined_wallet_auth_key"));
+    const localKey = accountInfo.allKeys[0];
+    console.log("Local Key", localKey);
     return localKey
   }
 
+  // wrap gas fee
   const getGas = (gas) => gas ? new BN(gas) : new BN('100000000000000');
-
   const getAmount = (amount) => amount ? new BN(utils.format.parseNearAmount(amount)) : new BN('0');
 
-  const executeMultipleTransactions = async function (transactions){
-   // get public key
-   const publicKeyGet = await getAccessKey();
-   const pubKey = PublicKey.from(publicKeyGet)
+  const executeMultipleTransactions = async function (transactions) {
+    // get public key
+    const publicKeyGet = await getAccessKey();
+    const pubKey = PublicKey.from(publicKeyGet)
     const tokenTransactions = await Promise.all(
       transactions.map(async (t, i) => {
         // get block hash
@@ -61,7 +61,7 @@ const Deposit = ({ item }) => {
       })
     )
     console.log(tokenTransactions);
-    return wallet.requestSignTransactions({transactions: tokenTransactions});
+    return wallet.requestSignTransactions({ transactions: tokenTransactions });
   }
 
 
@@ -153,7 +153,7 @@ const Deposit = ({ item }) => {
             Cancel
           </Button>
           <Button variant="danger" onClick={() => checkAccToContract()}>
-            check account 
+            check account
           </Button>
         </Modal.Footer>
       </Modal>
