@@ -1,5 +1,6 @@
-import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
-import styled from 'styled-components'
+import { Form, Button, Container, Row, Col, ButtonGroup, ToggleButton } from 'react-bootstrap';
+import styled from 'styled-components';
+import { useState } from 'react';
 
 const StyledContainer = styled(Container)`
     margin: 9%;
@@ -7,6 +8,14 @@ const StyledContainer = styled(Container)`
 `
 
 const Pool = () => {
+
+    const [radioValue, setRadioValue] = useState('0.2');
+
+    const radios = [
+        { lable: '0.2%', value: '0.2' },
+        { lable: '0.3%', value: '0.3' },
+        { lable: '0.6%', value: '0.6' },
+    ];
     
     return (
         <>
@@ -36,11 +45,23 @@ const Pool = () => {
                         </div>
                     </Col>
                     <Col>
-                        <div class="btn-group">
-                                    <button type="button" class="btn btn-primary">Apple</button>
-                                    <button type="button" class="btn btn-primary">Samsung</button>
-                                    <button type="button" class="btn btn-primary">Sony</button>
-                        </div>
+                        <ButtonGroup>
+                            {radios.map((radio, idx) => (
+                                <ToggleButton
+                                    key={idx}
+                                    id={`radio-${idx}`}
+                                    type="radio"
+                                    variant={idx % 2 ? 'outline-info' : 'outline-info'}
+                                    name="radio"
+                                    value={radio.value}
+                                    checked={radioValue === radio.value}
+                                    onChange={(e) => setRadioValue(e.currentTarget.value)}
+                                >
+                                    {radio.lable}
+                                </ToggleButton>
+                            ))}
+                            <input value={radioValue}/>
+                        </ButtonGroup>
                     </Col>
                 </Row>
                 <Button className="mt-4" type="submit">Submit</Button>

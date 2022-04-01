@@ -5,13 +5,12 @@ import Deposit from '../../Components/Header/Buttons/Deposit'
 import Withdraw from '../../Components/Header/Buttons/Withdraw';
 import { getConfig } from '../../services/config';
 
-
 const config = getConfig('testnet')
 
 const Account = () => {
 
     const [result, setResult] = useState([])
-    let obj = {};
+    let tokenResults = []
     const contract = window.contract;
     const accountId = window.accountId;
     
@@ -37,7 +36,7 @@ const Account = () => {
             }
 
             let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
-            obj = {
+            let obj = {
                 id: i,
                 name: metaData.name,
                 balanceAccount: balanceOfWallet,
@@ -58,9 +57,10 @@ const Account = () => {
                     obj.balanceContract = depo[i]
                 }
             }
-            setResult((data) => [...data, obj]);
+            tokenResults.push(obj)
         }
-
+        console.log(tokenResults);
+        setResult(tokenResults);
     }
 
     useEffect(async () => {
