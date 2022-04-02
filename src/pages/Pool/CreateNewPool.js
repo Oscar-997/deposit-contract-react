@@ -8,7 +8,7 @@ const StyledContainer = styled(Container)`
     max-width: 800px;
 `
 
-const Pool = () => {
+const CreateNewPool = () => {
 
     const { result } = useContext(TokenResults)
 
@@ -71,11 +71,11 @@ const Pool = () => {
                         </ButtonGroup>
                     </Col>
                 </Row>
-                <Button className="mt-4" type="submit">Submit</Button>
+                <Button className="mt-4" type="submit">Create</Button>
             </Form>
         </StyledContainer>
         </>
     )
 }
 
-export default Pool
+export default CreateNewPool

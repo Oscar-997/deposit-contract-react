@@ -17,63 +17,6 @@ const Account = () => {
 
     const {result} = useContext(TokenResults)
 
-    console.log('result', result);
-
-    // const [result, setResult] = useState([])
-    // let tokenResults = []
-    // const contract = window.contract;
-    // const accountId = window.accountId;
-    
-    // const getBalanceOf = async () => {
-        
-    //     let depo = await contract.get_deposits({ account_id: accountId })
-
-    //     const tokens = await fetch(
-    //         `${config.helperUrl}/account/${accountId}/likelyTokens`
-    //     )
-    //         .then((response) => response.json())
-    //         .then((tokens) => tokens)
-
-    //     for (let i of tokens) {
-    //         let balanceOfWallet = await window.walletConnection.account().viewFunction(i, "ft_balance_of", { account_id: accountId })
-    //             .catch((err) => {
-    //                 return {
-    //                     isFailed: true
-    //                 }
-    //             });
-    //         if (balanceOfWallet.isFailed) {
-    //             continue
-    //         }
-
-    //         let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
-    //         let obj = {
-    //             id: i,
-    //             name: metaData.name,
-    //             balanceAccount: balanceOfWallet,
-    //             symbol: metaData.symbol,
-    //             decimals: metaData.decimals,
-    //         }
-
-    //         let storageBalanceOf = await window.walletConnection.account().viewFunction(i, "storage_balance_of", {account_id: config.contractName })
-            
-    //         if (storageBalanceOf !== null) {
-    //             obj.checkRegis = true
-    //         }else {
-    //             obj.checkRegis = false
-    //         }
-
-    //         for (let i2 in depo) {
-    //             if (i === i2) {
-    //                 obj.balanceContract = depo[i]
-    //             }
-    //         }
-    //         tokenResults.push(obj)
-    //     }
-    //     console.log(tokenResults);
-    //     setResult(tokenResults);
-    // }
-
-    
     return (
         <Container fluid>
             <h1>Contract wallet</h1>

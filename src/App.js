@@ -2,10 +2,11 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home'
 import Account from './pages/Account/Account';
 import Swap from './pages/Swap/Swap';
-import Pool from './pages/Pool/Pool';
+import CreateNewPool from './pages/Pool/CreateNewPool';
 import AddLiquidity from './pages/Pool/AddLiquidity';
 import Header from './Components/Header/Header';
 import styled from 'styled-components';
+import ViewPools from './pages/Pool/ViewPools';
 
 const AppWrapper = styled.div`
     display: flex;
@@ -44,8 +45,9 @@ const App = () => {
           <Route path='/' element={<Home />}/>
           <Route path="/account" element={<Account/>}/>
           <Route path="/swap" element={<Swap/>}/>
-          <Route path="/create-pool" element={<Pool/>}/>
+          <Route path="/create-pool" element={<CreateNewPool/>}/>
           <Route path="/add-liquidity" element={<AddLiquidity/>}/>
+          <Route path="/view-pools" element={<ViewPools/>}/>
         </Routes>
       </BodyWrapper>
     </AppWrapper>

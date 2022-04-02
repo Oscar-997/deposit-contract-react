@@ -60,7 +60,7 @@ const ButtonViewAccount = () => {
             </Link>
         </Button>
         <WrapButtonPool>
-        <Button variant="info">Pool</Button>
+            <Button variant="info">Pool</Button>
             <MenuDropdown className='pool-list'>
                 <ItemDropdown>
                     <Link to={'/create-pool'}>Create new pool</Link>
@@ -68,7 +68,9 @@ const ButtonViewAccount = () => {
                 <ItemDropdown>
                     <Link to={'/add-liquidity'}>Add liquidity</Link>
                 </ItemDropdown>
-                <ItemDropdown>3</ItemDropdown>
+                <ItemDropdown>
+                    <Link to={'/view-pools'}>View pool</Link>
+                </ItemDropdown>
             </MenuDropdown>
         </WrapButtonPool>
     </>
