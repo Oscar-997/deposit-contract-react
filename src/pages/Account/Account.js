@@ -1,76 +1,84 @@
 import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useEffect, useState } from 'react';
+import { useContext } from 'react';
 import Deposit from '../../Components/Header/Buttons/Deposit'
 import Withdraw from '../../Components/Header/Buttons/Withdraw';
-import { getConfig } from '../../services/config';
+import styled from 'styled-components';
+import loading from '../../assets/loading-gift.gif'
+import { TokenResults } from '../../context/TokenResultsContext';
 
-const config = getConfig('testnet')
+const StyledLoading = styled.div`
+    position: relative;
+    margin: 0 auto;
+    left: 45%;
+`
 
 const Account = () => {
 
-    const [result, setResult] = useState([])
-    let tokenResults = []
-    const contract = window.contract;
-    const accountId = window.accountId;
+    const {result} = useContext(TokenResults)
+
+    console.log('result', result);
+
+    // const [result, setResult] = useState([])
+    // let tokenResults = []
+    // const contract = window.contract;
+    // const accountId = window.accountId;
     
-    const getBalanceOf = async () => {
+    // const getBalanceOf = async () => {
         
-        let depo = await contract.get_deposits({ account_id: accountId })
+    //     let depo = await contract.get_deposits({ account_id: accountId })
 
-        const tokens = await fetch(
-            `${config.helperUrl}/account/${accountId}/likelyTokens`
-        )
-            .then((response) => response.json())
-            .then((tokens) => tokens)
+    //     const tokens = await fetch(
+    //         `${config.helperUrl}/account/${accountId}/likelyTokens`
+    //     )
+    //         .then((response) => response.json())
+    //         .then((tokens) => tokens)
 
-        for (let i of tokens) {
-            let balanceOfWallet = await window.walletConnection.account().viewFunction(i, "ft_balance_of", { account_id: accountId })
-                .catch((err) => {
-                    return {
-                        isFailed: true
-                    }
-                });
-            if (balanceOfWallet.isFailed) {
-                continue
-            }
+    //     for (let i of tokens) {
+    //         let balanceOfWallet = await window.walletConnection.account().viewFunction(i, "ft_balance_of", { account_id: accountId })
+    //             .catch((err) => {
+    //                 return {
+    //                     isFailed: true
+    //                 }
+    //             });
+    //         if (balanceOfWallet.isFailed) {
+    //             continue
+    //         }
 
-            let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
-            let obj = {
-                id: i,
-                name: metaData.name,
-                balanceAccount: balanceOfWallet,
-                symbol: metaData.symbol,
-                decimals: metaData.decimals,
-            }
+    //         let metaData = await window.walletConnection.account().viewFunction(i, "ft_metadata")
+    //         let obj = {
+    //             id: i,
+    //             name: metaData.name,
+    //             balanceAccount: balanceOfWallet,
+    //             symbol: metaData.symbol,
+    //             decimals: metaData.decimals,
+    //         }
 
-            let storageBalanceOf = await window.walletConnection.account().viewFunction(i, "storage_balance_of", {account_id: config.contractName })
+    //         let storageBalanceOf = await window.walletConnection.account().viewFunction(i, "storage_balance_of", {account_id: config.contractName })
             
-            if (storageBalanceOf !== null) {
-                obj.checkRegis = true
-            }else {
-                obj.checkRegis = false
-            }
+    //         if (storageBalanceOf !== null) {
+    //             obj.checkRegis = true
+    //         }else {
+    //             obj.checkRegis = false
+    //         }
 
-            for (let i2 in depo) {
-                if (i === i2) {
-                    obj.balanceContract = depo[i]
-                }
-            }
-            tokenResults.push(obj)
-        }
-        console.log(tokenResults);
-        setResult(tokenResults);
-    }
+    //         for (let i2 in depo) {
+    //             if (i === i2) {
+    //                 obj.balanceContract = depo[i]
+    //             }
+    //         }
+    //         tokenResults.push(obj)
+    //     }
+    //     console.log(tokenResults);
+    //     setResult(tokenResults);
+    // }
 
-    useEffect(async () => {
-        if (window.walletConnection.isSignedIn()) {
-            await getBalanceOf()
-        }
-    }, [])
+    
     return (
         <Container fluid>
             <h1>Contract wallet</h1>
+            {result 
+            ? result.length > 0 ? 
             <Table striped hover bordered responsive>
                 <thead>
                     <tr>
@@ -106,7 +114,12 @@ const Account = () => {
                         )
                     })}
                 </tbody>
-            </Table>
+            </Table>: (
+                <StyledLoading>
+                    <img src={loading}/>
+                </StyledLoading>
+            ) : null}
+            
         </Container>
     )
 }

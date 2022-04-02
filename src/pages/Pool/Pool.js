@@ -1,6 +1,7 @@
 import { Form, Button, Container, Row, Col, ButtonGroup, ToggleButton } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { TokenResults } from '../../context/TokenResultsContext'
 
 const StyledContainer = styled(Container)`
     margin: 9%;
@@ -9,7 +10,9 @@ const StyledContainer = styled(Container)`
 
 const Pool = () => {
 
-    const [radioValue, setRadioValue] = useState('0.2');
+    const { result } = useContext(TokenResults)
+
+    const [radioValue, setRadioValue] = useState('0.3');
 
     const radios = [
         { lable: '0.2%', value: '0.2' },
@@ -25,16 +28,20 @@ const Pool = () => {
                 <Row className="justify-content-md-center">
                     <Col>
                         <select class="form-select">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
+                            {result.map((item, index) => {
+                                return (
+                                    <option key={index}>{item.name}</option>
+                                )
+                            })}
                         </select>
                     </Col>
                     <Col>
                         <select class="form-select">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
+                            {result.map((item, index) => {
+                                return (
+                                    <option key={index}>{item.name}</option>
+                                )
+                            })}
                         </select>
                     </Col>
                 </Row>

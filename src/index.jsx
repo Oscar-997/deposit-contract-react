@@ -5,6 +5,7 @@ import App from './App';
 import {initContract} from "./services/near"
 import { Buffer } from 'buffer'
 import AuthContextProvider from "./context/authContext"
+import TokenRs from "./context/TokenResultsContext"
 
 window.Buffer = window.Buffer || Buffer
 
@@ -12,9 +13,11 @@ initContract().then(() => {
   ReactDOM.render(
     <StrictMode>
       <AuthContextProvider>
-        <Router>
-          <App/>
-        </Router>
+        <TokenRs>
+          <Router>
+            <App/>
+          </Router>
+        </TokenRs>
       </AuthContextProvider>
     </StrictMode>,
     document.getElementById('root')
