@@ -51,7 +51,7 @@ const ButtonViewAccount = () => {
         </Button>
         <Button variant="success">
             <Link to={'/account'} style={{color: 'white', textDecoration: 'none'}}>
-                View Contract wallet
+                Account Details
             </Link>
         </Button>
         <Button variant="warning">
@@ -69,7 +69,7 @@ const ButtonViewAccount = () => {
                     <Link to={'/add-liquidity'}>Add liquidity</Link>
                 </ItemDropdown>
                 <ItemDropdown>
-                    <Link to={'/view-pools'}>View pool</Link>
+                    <Link to={'/view-pools'}>View pools</Link>
                 </ItemDropdown>
             </MenuDropdown>
         </WrapButtonPool>

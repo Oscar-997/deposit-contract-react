@@ -8,7 +8,7 @@ export async function initContract() {
     window.walletConnection = new WalletConnection(near)
     window.accountId = await window.walletConnection.getAccountId();
     window.contract = new Contract(window.walletConnection.account(), nearConfig.contractName, {
-      viewMethods: ['storage_balance_of','get_deposits'],
+      viewMethods: ['storage_balance_of','get_deposits', 'get_pool', 'get_pools', 'get_number_of_pools'],
       changeMethods: ['new', 'create_new_pool', 'add_liquidity', 'storage_deposit', 'withdraw', 'add_simple_pool'],
     })
 }

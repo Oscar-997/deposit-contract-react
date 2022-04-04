@@ -4,8 +4,6 @@ import { useState, useContext } from 'react';
 import { TokenResults } from '../../context/TokenResultsContext'
 import { getConfig } from '../../services/config';
 import { executeMultipleTransactions } from '../../utils/executeMultipleTransactions'
-import { utils } from 'near-api-js';
-import { parseNearAmount } from 'near-api-js/lib/utils/format';
 
 const StyledContainer = styled(Container)`
     margin: 9%;
@@ -51,6 +49,8 @@ const CreateNewPool = () => {
         const storageBalances = await Promise.all(
             tokenIds.map((id) => ftGetStorageBalance(id, config.contractName))
         )
+
+        console.log(storageBalances);
 
         const transactions = storageBalances
             .reduce((acc, sb, i) => {
@@ -98,6 +98,7 @@ const CreateNewPool = () => {
                 <Row className="justify-content-md-center">
                     <Col>
                         <select onChange={(e) => setToken1(e.target.value)} className="form-select">
+                            <option value='null'>Select Token 1</option>
                             {result.map((item, index) => {
                                 return (
                                     <option key={index} value={item.id}> {item.name}</option>
@@ -107,6 +108,7 @@ const CreateNewPool = () => {
                     </Col>
                     <Col>
                         <select onChange={(e) => setToken2(e.target.value)} className="form-select">
+                            <option value='null'>Select Token 2</option>
                             {result.map((item, index) => {
                                 return (
                                     <option key={index} value={item.id} >{item.name}</option>
