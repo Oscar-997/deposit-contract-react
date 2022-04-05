@@ -11,9 +11,6 @@ const ViewPools = () => {
     const exContract = window.contract;
     const TokensDataObj = useContext(TokenResults)
     const TokensData = TokensDataObj[Object.keys(TokensDataObj)[0]] // unwrap context object to arr
-    for (let i of TokensDataObj) {
-        Token
-    }
     console.log("Token Data: ", TokensData)
     console.log("Excontract: ", exContract)
     useEffect(async () => {
@@ -46,7 +43,7 @@ const ViewPools = () => {
                                 return (
                                     <tr key={index}>
                                         <td>{++index}</td>
-                                        <td>{} -{item.token_account_ids[1]}</td>
+                                        <td>{ } -{item.token_account_ids[1]}</td>
                                         <td></td>
                                         <td></td>
                                     </tr>
