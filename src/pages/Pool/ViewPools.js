@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap'
-import { BsFillArrowDownCircleFill, BsFillArrowUpCircleFill } from "react-icons/bs";
+import { BsFillArrowUpCircleFill } from "react-icons/bs";
+import { Button } from 'react-bootstrap';
+import AddLiquidity from '../../Components/Header/Buttons/AddLiquidity'
 const ViewPools = () => {
     const [allPools, setAllPools] = useState([])
     const [metaData, setMetaData] = useState({})
@@ -40,7 +42,7 @@ const ViewPools = () => {
         setMetaData(metadata)
         setAllPools(allPools)
     }, [])
-    console.log(allPools);
+
     return (
     <>
         <h1>List pools</h1>
@@ -52,6 +54,8 @@ const ViewPools = () => {
                     <th>Fee < BsFillArrowUpCircleFill /></th>
                     <th>Amount</th>
                     <th>Pool ids</th>
+                    <th>Add liquidity</th>
+                    <th>Remove liquidity</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,11 +65,18 @@ const ViewPools = () => {
                             <tr key={index}>
                                 <td>{++index}</td>
                                 <td>
-                                    <span>{metaData[item.token_account_ids[0]].symbol}</span> -- <span>{metaData[item.token_account_ids[1]].symbol}</span>
+                                    <span style={{ color: 'green' }}>{metaData[item.token_account_ids[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[item.token_account_ids[1]].symbol}</span> <br />
+                                    <span style={{ color: 'green' }}>{item.token_account_ids[0]}</span> -- <span style={{ color: 'blue' }}>{item.token_account_ids[1]}</span>
                                 </td>
                                 <td>{item.total_fee / 100 }%</td>
-                                <td>{item.amounts[0]} -- {item.amounts[1]}</td>
+                                <td>{item.amounts[0] / 10 ** metaData[item.token_account_ids[0]].decimals} -- {item.amounts[1] / 10 ** metaData[item.token_account_ids[1]].decimals}</td>
                                 <td>{index - 1}</td>
+                                <td>
+                                    <AddLiquidity poolId={index - 1} item={item} metaData={metaData}/>
+                                </td>
+                                <td>
+                                    <Button variant='danger'>Remove Liquidity</Button>
+                                </td>
                             </tr>
                         )
                     }) :

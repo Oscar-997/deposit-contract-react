@@ -86,9 +86,6 @@ const ButtonViewAccount = () => {
                         <Link to={'/create-pool'}>Create new pool</Link>
                     </ItemDropdown>
                     <ItemDropdown>
-                        <Link to={'/add-liquidity'}>Add liquidity</Link>
-                    </ItemDropdown>
-                    <ItemDropdown>
                         <Link to={'/view-pools'}>View pools</Link>
                     </ItemDropdown>
                 </MenuDropdown>

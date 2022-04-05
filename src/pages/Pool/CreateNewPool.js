@@ -30,7 +30,7 @@ const CreateNewPool = () => {
         { lable: '0.6%', value: 0.6},
     ];
 
-    const storageDepositAction = (accountId, amount, registrationOnly = false) => ({
+    const storageDepositAction = (accountId, amount, registrationOnly = true) => ({
         methodName: 'storage_deposit',
         args: {
             account_id: accountId,
@@ -60,7 +60,7 @@ const CreateNewPool = () => {
             .map((id) => {
                 return {
                     receiverId: id,
-                    functionCalls: [storageDepositAction(contract.contractId, '0.1')],
+                    functionCalls: [storageDepositAction(contract.contractId, '0.00125')],
                 }
             })
         
