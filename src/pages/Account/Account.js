@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import loading from '../../assets/loading-gift.gif'
 import { TokenResults } from '../../context/TokenResultsContext';
 
-const StyledLoading = styled.div`
+export const StyledLoading = styled.div`
     position: relative;
     margin: 0 auto;
     left: 45%;
