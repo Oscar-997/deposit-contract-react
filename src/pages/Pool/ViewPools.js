@@ -1,22 +1,16 @@
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap'
 import { BsFillArrowDownCircleFill, BsFillArrowUpCircleFill } from "react-icons/bs";
-import { getConfig } from '../../services/config';
-import { TokenResults, getBalanceOf2 } from '../../context/TokenResultsContext'
-import loading from '../../assets/loading-gift.gif'
-import { getAllByPlaceholderText } from '@testing-library/react';
 const ViewPools = () => {
     const [allPools, setAllPools] = useState([])
-    const [allMetadata, setAllMetadata] = useState([])
+    const [metaData, setMetaData] = useState({})
 
-    const config = getConfig('testnet');
     const contract = window.contract;
-    
+
     useEffect(async () => {
         const allPools = await contract.get_pools({ from_index: 0, limit: 100 })
-        console.log("All pools: ", allPools)
         let nonDupTokenList = [];
-        let tempArr = []
+        let metadata = {};
 
         let isInArr = false;
         allPools.map((pool, i) => {
@@ -24,7 +18,7 @@ const ViewPools = () => {
             if (nonDupTokenList.length > 0) { // convert to non-duplicate token_id's array
                 pool.token_account_ids.map((id) => {
                     for (let i of nonDupTokenList) {
-                        if (id === i){
+                        if (id === i) {
                             isInArr = true
                         }
                     }
@@ -39,31 +33,49 @@ const ViewPools = () => {
             }
 
         })
-        nonDupTokenList.map(async(token_id) => {
-            const metadata = await window.walletConnection.account().viewFunction(token_id, "ft_metadata")
-            tempArr.push(metadata)
-            console.log(tempArr)
-            return metadata
-        })
-        console.log(tempArr)
+
+        for (let i of nonDupTokenList) {
+            metadata[i] = await window.walletConnection.account().viewFunction(i, 'ft_metadata')
+        }
+        setMetaData(metadata)
         setAllPools(allPools)
     }, [])
-
+    console.log(allPools);
     return (
+    <>
+        <h1>List pools</h1>
         <Table striped bordered hover>
             <thead>
                 <tr>
                     <th>#</th>
                     <th style={{ minWidth: 250 }}>Pair</th>
                     <th>Fee < BsFillArrowUpCircleFill /></th>
-                    <th>TVL <BsFillArrowDownCircleFill /></th>
-                    <th>Pools</th>
+                    <th>Amount</th>
+                    <th>Pool ids</th>
                 </tr>
             </thead>
             <tbody>
-                
+                {allPools.length > 0 ?
+                    allPools.map((item, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{++index}</td>
+                                <td>
+                                    <span>{metaData[item.token_account_ids[0]].symbol}</span> -- <span>{metaData[item.token_account_ids[1]].symbol}</span>
+                                </td>
+                                <td>{item.total_fee / 100 }%</td>
+                                <td>{item.amounts[0]} -- {item.amounts[1]}</td>
+                                <td>{index - 1}</td>
+                            </tr>
+                        )
+                    }) :
+                    <tr>
+                        <td>Loading...</td>
+                    </tr>
+                }
             </tbody>
         </Table>
+    </>
     )
 }
 
