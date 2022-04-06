@@ -30,7 +30,7 @@ const CreateNewPool = () => {
         { lable: '0.6%', value: 0.6 },
     ];
 
-    const storageDepositAction = (accountId, amount, registrationOnly = false) => ({
+    const storageDepositAction = (accountId, amount, registrationOnly = true) => ({
         methodName: 'storage_deposit',
         args: {
             account_id: accountId,

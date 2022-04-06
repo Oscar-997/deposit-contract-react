@@ -3,7 +3,7 @@ import { getConfig } from "../services/config";
 
 export const TokenResults = createContext()
 
-const TokenRs = ({ children }) => {
+const TokenDataContext = ({ children }) => {
 
     const [result, setResult] = useState([])
     const config = getConfig('testnet')
@@ -11,7 +11,10 @@ const TokenRs = ({ children }) => {
     const getBalanceOf = async () => {
         let tokenResults = []
 
-        let depo = await window.contract.get_deposits({ account_id: window.accountId })
+        let depo = await window.contract.get_deposited_tokens({ account_id: window.accountId }).catch(err => {
+            console.log("ERR: ", err)
+            return []
+        })
 
         const tokens = await fetch(
             `${config.helperUrl}/account/${window.accountId}/likelyTokens`
@@ -72,4 +75,4 @@ const TokenRs = ({ children }) => {
 
 }
 
-export default TokenRs;
+export default TokenDataContext;

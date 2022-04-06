@@ -1,8 +1,8 @@
 import { Table } from 'react-bootstrap';
 
 
-const AddLiquidity = () => {
-    
+const YourLiquidity = () => {
+
     return (
         <>
             <Table striped bordered hover>
@@ -38,4 +38,4 @@ const AddLiquidity = () => {
     )
 }
 
-export default AddLiquidity
+export default YourLiquidity
