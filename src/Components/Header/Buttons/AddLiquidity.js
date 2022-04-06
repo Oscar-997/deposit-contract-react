@@ -1,5 +1,5 @@
 import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BN from "bn.js";
 import {utils} from 'near-api-js';
 import { TokenResults } from "../../../context/TokenResultsContext";
@@ -21,6 +21,7 @@ const AddLiquidity = ({ poolId, item, metaData }) => {
     const handleShow = () => setShow(true);
     const [amountToken1, setAmountToken1] = useState('')
     const [amountToken2, setAmountToken2] = useState('')
+    const [shares, setShares] = useState(0)
 
     const contract = window.contract
 
@@ -39,11 +40,20 @@ const AddLiquidity = ({ poolId, item, metaData }) => {
                      (amountToken2 * 10 ** metaData[item.token_account_ids[1]].decimals).toString()]
         }, 
             getGas("300000000000000"),
-            getAmount('0.0008')
+            getAmount('0.0009')
         )
     }
 
-    console.log(item);
+
+    useEffect(() => {
+      const getShareInPool = (async() => {
+        const shares =  await contract.get_pool_shares({
+          pool_id: poolId,
+          account_id: window.accountId
+        })
+        setShares(shares) 
+      })()
+    }, [])
 
     return (
       <>
@@ -79,7 +89,7 @@ const AddLiquidity = ({ poolId, item, metaData }) => {
                 </InputGroup>
             </Modal.Body>
             <StyledShareTotal>
-              <span>Shares: {item.shares_total_supply}</span>
+              <span>Your Shares: {shares}</span>
             </StyledShareTotal>
           <Modal.Footer>
             <Button variant="primary" onClick={addLiquidity}>

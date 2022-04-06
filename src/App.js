@@ -34,12 +34,14 @@ const BodyWrapper = styled.div`
 `
 
 const App = () => {
+  const isLogged = window.walletConnection.isSignedIn()
   return (
     <AppWrapper>
       <HeaderWrapper>
         <Header></Header>
       </HeaderWrapper>
-      <BodyWrapper>
+      { isLogged ?
+        (<BodyWrapper>
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path="/account" element={<Account/>}/>
@@ -47,7 +49,14 @@ const App = () => {
           <Route path="/create-pool" element={<CreateNewPool/>}/>
           <Route path="/view-pools" element={<ViewPools/>}/>
         </Routes>
-      </BodyWrapper>
+      </BodyWrapper>)
+        : (
+        <BodyWrapper>
+          <h1>Wellcome Oscar Exchange</h1>
+          <h1>Please Connect your wallet</h1>
+        </BodyWrapper>
+        )
+      }
     </AppWrapper>
   );
 }

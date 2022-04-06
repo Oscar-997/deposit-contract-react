@@ -24,8 +24,7 @@ const CreateNewPool = () => {
     const [radioValue, setRadioValue] = useState(0.3);
 
     const radios = [
-        { lable: '0.2%', value: 
-    0.2 },
+        { lable: '0.2%', value: 0.2 },
         { lable: '0.3%', value: 0.3 },
         { lable: '0.6%', value: 0.6},
     ];

@@ -3,6 +3,7 @@ import { Table } from 'react-bootstrap'
 import { BsFillArrowUpCircleFill } from "react-icons/bs";
 import { Button } from 'react-bootstrap';
 import AddLiquidity from '../../Components/Header/Buttons/AddLiquidity'
+import RemoveLiquidity from '../../Components/Header/Buttons/RemoveLiquidity';
 const ViewPools = () => {
     const [allPools, setAllPools] = useState([])
     const [metaData, setMetaData] = useState({})
@@ -43,6 +44,8 @@ const ViewPools = () => {
         setAllPools(allPools)
     }, [])
 
+    console.log(allPools);
+
     return (
     <>
         <h1>List pools</h1>
@@ -75,7 +78,7 @@ const ViewPools = () => {
                                     <AddLiquidity poolId={index - 1} item={item} metaData={metaData}/>
                                 </td>
                                 <td>
-                                    <Button variant='danger'>Remove Liquidity</Button>
+                                    <RemoveLiquidity poolId={index - 1} item={item} metaData={metaData}/>
                                 </td>
                             </tr>
                         )
