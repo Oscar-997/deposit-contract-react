@@ -40,7 +40,7 @@ const WrapButtonPool = styled.div`
 const MenuDropdown = styled.div`
     display: none;
     position: absolute;
-    background-color: rgba(21, 61, 111, 0.44);
+    background-color: rgba(21, 61, 111, 0.8);
     border: 1px solid rgba(21, 61, 111, 0.44);
     width: 200px;
     min-width: 160px;
@@ -74,9 +74,9 @@ const ButtonViewAccount = () => {
             <WrapButtonPool>
                 <Button variant="info">Pool</Button>
                 <MenuDropdown className='pool-list'>
-                    <Link to={'/create-pool'}>Create new pool</Link>
-                    <Link to={'/add-liquidity'}>Add liquidity</Link>
-                    <Link to={'/view-pools'}>View pool</Link>
+                    <Link to={'/create-pool'}>Create New Pool</Link>
+                    <Link to={'/view-pools'}>View Pools</Link>
+                    <Link to={'/add-liquidity'}>Your liquidity</Link>
                 </MenuDropdown>
             </WrapButtonPool>
         </>

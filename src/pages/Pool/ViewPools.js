@@ -59,9 +59,7 @@ const ViewPools = () => {
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th style={{
-                                    minWidth: 200
-                                }}>Pair</th>
+                                <th>Pair</th>
                                 <th>Fee</th>
                                 <th>Token 1 amount</th>
                                 <th>Token 2 amount</th>
@@ -76,11 +74,18 @@ const ViewPools = () => {
                                 const symbol2 = metadata[pool.token_account_ids[1]].symbol
                                 const decimals1 = metadata[pool.token_account_ids[0]].decimals
                                 const decimals2 = metadata[pool.token_account_ids[1]].decimals
+                                const token1Id = pool.token_account_ids[0]
+                                const token2Id = pool.token_account_ids[1]
 
                                 return (
                                     <tr key={index}>
                                         <td>{++index}</td>
-                                        <td>{symbol1} - {symbol2}</td>
+                                        <td>
+                                            <div>
+                                                <span style={{ color: "#2666CF" }}>{symbol1}</span> - <span style={{ color: "#FFB72B" }}>{symbol2}</span>
+                                            </div>
+                                            <div><span style={{ color: "#2666CF" }}>{token1Id}</span> /// <span style={{ color: "#FFB72B" }}>{token2Id}</span></div>
+                                        </td>
                                         <td>{pool.total_fee / 100}%</td>
                                         <td>{pool.amounts[0] / 10 ** decimals1}</td>
                                         <td>{pool.amounts[1] / 10 ** decimals2}</td>

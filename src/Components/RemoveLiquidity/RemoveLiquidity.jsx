@@ -69,8 +69,8 @@ export default function RemoveLiquidity({ poolId }) {
                 </Modal.Body>
                 <Modal.Footer>
                     <div>
-                        <p>Total shares: {totalShares}</p>
-                        <p>Your shares: {accountShares}</p>
+                        <p style={{ color: "#FF4646" }}>Total shares: {totalShares}</p>
+                        <p style={{ color: "#21209C" }}>Your shares: {accountShares}</p>
                     </div>
                     <Button variant="secondary" onClick={handleClose}>
                         Close

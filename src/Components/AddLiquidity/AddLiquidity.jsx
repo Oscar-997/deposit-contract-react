@@ -90,8 +90,8 @@ export default function AddLiquidity({ poolId, symbols, decimals }) {
                 </Modal.Body>
                 <Modal.Footer style={{justifyContent: "space-evenly"}}>
                     <div>
-                        <p>Total shares: {totalShares}</p>
-                        <p>Your shares: {accountShares}</p>
+                        <p style={{ color: "#FF4646"}}>Total shares: {totalShares}</p>
+                        <p style={{ color: "#21209C"}}>Your shares: {accountShares}</p>
                     </div>
                     <Button variant="secondary" onClick={handleClose}>
                         Close

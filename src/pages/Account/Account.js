@@ -18,7 +18,7 @@ const Account = () => {
     const {result} = useContext(TokenResults)
 
     return (
-        <Container fluid>
+        <Container fluid style={{maxWidth: "90%"}}>
             <h1>Contract wallet</h1>
             {result 
             ? result.length > 0 ? 
@@ -29,8 +29,8 @@ const Account = () => {
                         <th>Symbol</th>
                         <th>Token name</th>
                         <th>Token ID</th>
-                        <th>Amount in wallet Account</th>
-                        <th>Amount in Contract</th>
+                        <th>Amount in NEAR</th>
+                        <th>Amount in Ex</th>
                         <th>Decimals</th>
                         <th>Deposit</th>
                         <th>Withdraw</th>
