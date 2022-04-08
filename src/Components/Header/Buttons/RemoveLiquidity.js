@@ -32,18 +32,20 @@ const RemoveLiquidity = ({poolId, item, metaData}) => {
             min_amounts: ["0", "0"]
         },
             getGas("300000000000000"),
-            getAmount('0.0009')
+            getAmount('0.000000000000000000000001')
         )
     }
 
+    const getShareInPool = async() => {
+      const shares =  await contract.get_pool_shares({
+        pool_id: poolId,
+        account_id: window.accountId
+      })
+      setShares(shares) 
+    }
+
     useEffect(() => {
-        const getShareInPool = (async() => {
-          const shares =  await contract.get_pool_shares({
-            pool_id: poolId,
-            account_id: window.accountId
-          })
-          setShares(shares) 
-        })()
+        getShareInPool()
       }, [])
 
     return (
@@ -58,7 +60,6 @@ const RemoveLiquidity = ({poolId, item, metaData}) => {
             <Modal.Title>Remove liquidity</Modal.Title>
           </Modal.Header>
             <Modal.Body>
-            <span>Token amount in pool :</span>
             <InputGroup className="mb-3">
                 <InputGroup.Text id="inputGroup-sizing-default">Shares</InputGroup.Text>
                 <FormControl
@@ -70,7 +71,8 @@ const RemoveLiquidity = ({poolId, item, metaData}) => {
                 </InputGroup>
             </Modal.Body>
             <StyledShareTotal>
-              <span>Your Shares: {shares}</span>
+              <span>Your Shares: {shares}</span> <br />
+              <span style={{color: 'blue'}} >Total Shares: {item.shares_total_supply}</span>
             </StyledShareTotal>
           <Modal.Footer>
             <Button variant="primary" onClick={removeLiquidity}>

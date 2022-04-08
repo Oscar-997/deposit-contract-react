@@ -88,6 +88,9 @@ const ButtonViewAccount = () => {
                     <ItemDropdown>
                         <Link to={'/view-pools'}>View pools</Link>
                     </ItemDropdown>
+                    <ItemDropdown>
+                        <Link to={'/your-liquidity'}>Your liquidity</Link>
+                    </ItemDropdown>
                 </MenuDropdown>
             </WrapButtonPool>
         </>

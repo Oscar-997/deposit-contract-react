@@ -20,8 +20,7 @@ const Account = () => {
     return (
         <Container fluid>
             <h1>Account details</h1>
-            {result 
-            ? result.length > 0 ? 
+            {result ? result.length > 0 ? 
             <Table striped hover bordered responsive>
                 <thead>
                     <tr>

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap'
 import { BsFillArrowUpCircleFill } from "react-icons/bs";
-import { Button } from 'react-bootstrap';
 import AddLiquidity from '../../Components/Header/Buttons/AddLiquidity'
 import RemoveLiquidity from '../../Components/Header/Buttons/RemoveLiquidity';
 const ViewPools = () => {
@@ -16,9 +15,8 @@ const ViewPools = () => {
         let metadata = {};
 
         let isInArr = false;
-        allPools.map((pool, i) => {
-            // arr = pool.token_account_ids
-            if (nonDupTokenList.length > 0) { // convert to non-duplicate token_id's array
+        allPools.map((pool) => {
+            if (nonDupTokenList.length > 0) { 
                 pool.token_account_ids.map((id) => {
                     for (let i of nonDupTokenList) {
                         if (id === i) {
@@ -34,7 +32,6 @@ const ViewPools = () => {
             } else {
                 nonDupTokenList.push(...pool.token_account_ids)
             }
-
         })
 
         for (let i of nonDupTokenList) {
@@ -43,8 +40,6 @@ const ViewPools = () => {
         setMetaData(metadata)
         setAllPools(allPools)
     }, [])
-
-    console.log(allPools);
 
     return (
     <>

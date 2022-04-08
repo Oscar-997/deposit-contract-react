@@ -1,8 +1,7 @@
 import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import BN from "bn.js";
 import {utils} from 'near-api-js';
-import { TokenResults } from "../../../context/TokenResultsContext";
 import styled from "styled-components";
 
 const getGas = (gas) => gas ? new BN(gas) : new BN('100000000000000');
@@ -12,10 +11,9 @@ const StyledShareTotal = styled.div`
   margin: 0 0 0 17px;
 `
 
-const AddLiquidity = ({ poolId, item, metaData }) => {
-    const [show, setShow] = useState(false);
+const AddLiquidity = ({ poolId, item, metaData}) => {
 
-    const { result } = useContext(TokenResults)
+    const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -44,15 +42,16 @@ const AddLiquidity = ({ poolId, item, metaData }) => {
         )
     }
 
+    const getShareInPool = async() => {
+      const shares =  await contract.get_pool_shares({
+        pool_id: poolId,
+        account_id: window.accountId
+      })
+      setShares(shares) 
+    }
 
     useEffect(() => {
-      const getShareInPool = (async() => {
-        const shares =  await contract.get_pool_shares({
-          pool_id: poolId,
-          account_id: window.accountId
-        })
-        setShares(shares) 
-      })()
+      getShareInPool()
     }, [])
 
     return (
@@ -89,7 +88,8 @@ const AddLiquidity = ({ poolId, item, metaData }) => {
                 </InputGroup>
             </Modal.Body>
             <StyledShareTotal>
-              <span>Your Shares: {shares}</span>
+              <span>Your Shares: {shares}</span> <br />
+              <span style={{color: 'blue'}} >Total Shares: {item.shares_total_supply}</span>
             </StyledShareTotal>
           <Modal.Footer>
             <Button variant="primary" onClick={addLiquidity}>
