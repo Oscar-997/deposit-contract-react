@@ -28,7 +28,9 @@ const RemoveLiquidity = ({poolId, item, metaData}) => {
     const removeLiquidity = async() => {
         await contract.remove_liquidity({
             pool_id: poolId,
-            shares: totalSharesInAcc,
+            shares: (totalSharesInAcc * 10 ** 24).toLocaleString('fullwide', {
+              useGrouping: false
+            }),
             min_amounts: ["0", "0"]
         },
             getGas("300000000000000"),
@@ -71,8 +73,8 @@ const RemoveLiquidity = ({poolId, item, metaData}) => {
                 </InputGroup>
             </Modal.Body>
             <StyledShareTotal>
-              <span>Your Shares: {shares}</span> <br />
-              <span style={{color: 'blue'}} >Total Shares: {item.shares_total_supply}</span>
+              <span>Your Shares: {shares / 10 ** 24}</span> <br />
+              <span style={{color: 'blue'}} >Total Shares: {item.shares_total_supply / 10 ** 24}</span>
             </StyledShareTotal>
           <Modal.Footer>
             <Button variant="primary" onClick={removeLiquidity}>

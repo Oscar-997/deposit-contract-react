@@ -1,6 +1,6 @@
 import { Table } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { getMetaData, getPoolPairSymbols, getPoolPairDecimals, getAmountTokenFromShare,formatShares } from '../../utils/getPoolPairStuff';
+import { getMetaData, getPoolPairSymbols, getPoolPairDecimals, getAmountTokenFromShare,formatShares, formatSharesPercent } from '../../utils/getPoolPairStuff';
 import loading from '../../assets/loading-gift.gif';
 
 const YourLiquidity = () => {
@@ -47,10 +47,9 @@ const YourLiquidity = () => {
                         const yourToken1InPool = getAmountTokenFromShare(accountShareInPool, totalShareInPool, allPools[i].amounts[0]) 
                         const yourToken2InPool = getAmountTokenFromShare(accountShareInPool, totalShareInPool, allPools[i].amounts[1]) 
     
-                        const rawShares = accountShareInPool / totalShareInPool
-                        const yourSharesInPool = formatShares(rawShares)
-                        const yourSharesPercentInPool = accountShareInPool / totalShareInPool * 100
-                        const formatYourSharesPercentInPool = formatShares(yourSharesPercentInPool)
+                        
+                        const yourSharesInPool = formatShares(accountShareInPool)
+                        const yourSharesPercentInPool = formatSharesPercent(accountShareInPool, totalShareInPool)
                         
                         tempLiquidityInfo.push({
                             id: i,
@@ -58,7 +57,7 @@ const YourLiquidity = () => {
                             amounts: [yourToken1InPool, yourToken2InPool ],
                             decimals: decimalPair,
                             shares: yourSharesInPool,
-                            sharesPercent: formatYourSharesPercentInPool
+                            sharesPercent: yourSharesPercentInPool
                         })
                     }
                 }
@@ -94,8 +93,7 @@ const YourLiquidity = () => {
                                 <td>{item.symbol.token1Symbol} -- {item.symbol.token2Symbol}</td>
                                 <td>{item.amounts[0] / 10 ** item.decimals.token1Decimal} -- {item.amounts[1] / 10 ** item.decimals.token2Decimal}</td>
                                 <td>{item.shares} ({item.sharesPercent}%)</td>
-                                <td>
-                                </td>
+                                <td></td>
                             </tr>
                         )
                     })}
@@ -103,7 +101,6 @@ const YourLiquidity = () => {
             </Table> 
             :
                 <img src={loading} />}
-            
         </>
     )
 }

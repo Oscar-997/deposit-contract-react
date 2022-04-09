@@ -50,9 +50,15 @@ export const getPoolPairDecimals = (allMetadata, pool) => {
 }
 
 export const getAmountTokenFromShare = (accountShares, totalShares, amountInPool) => {
-    return accountShares / totalShares * amountInPool
+    return accountShares / totalShares * amountInPool 
 }
 
-export const formatShares = (shares) => {
+export const formatShares = (accountSharesInPool) => {
+    const shares = (accountSharesInPool) / 10 ** 24
+
     return shares === 1 ? shares : shares.toFixed(2)
+}
+
+export const formatSharesPercent = (accountShares, totalShares) => {
+    return accountShares / totalShares * 100
 }
