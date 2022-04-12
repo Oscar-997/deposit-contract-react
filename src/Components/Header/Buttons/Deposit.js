@@ -64,7 +64,7 @@ const Deposit = ({ item }) => {
             args: {
               registration_only: false,
             },
-            amount: "0.1",
+            amount: "0.01",
             gas: "100000000000000",
           }
         ]
