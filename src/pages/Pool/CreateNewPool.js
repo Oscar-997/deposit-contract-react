@@ -38,18 +38,14 @@ const CreateNewPool = () => {
         amount,
     })
 
-
     const ftGetStorageBalance = async(tokenId, accountId) => {
         return await window.walletConnection.account().viewFunction(tokenId, 'storage_balance_of', {account_id: accountId});
     }
-
 
     const addSimpleLiquidityPool = async (tokenIds, fee) => {
         const storageBalances = await Promise.all(
             tokenIds.map((id) => ftGetStorageBalance(id, config.contractName))
         )
-
-        console.log(storageBalances);
 
         const transactions = storageBalances
             .reduce((acc, sb, i) => {

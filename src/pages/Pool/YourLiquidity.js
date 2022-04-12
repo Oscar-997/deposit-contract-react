@@ -68,9 +68,7 @@ const YourLiquidity = () => {
 
         getYourLiquidityInfo()
 
-    }, [allPools])
-
-    console.log(liquidityInfo);
+    }, [allPools]);
 
     return (
         <>
