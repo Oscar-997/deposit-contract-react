@@ -1,35 +1,22 @@
-
-export const getMetadataOfAllTokens = async () => {
+export const getAllPools = async () => {
     const exContract = window.contract
-    let isInArr = false
-    let nonDupTokenList = []
-    let metadata = {}
-    const pools = await exContract.get_pools({
+    return await exContract.get_pools({
         from: 0,
         limit: 600
     })
+}
+export const getMetadataOfAllTokens = async () => {
+    let nonDupTokenList = []
+    let metadata = {}
+    const pools = await getAllPools()
 
     pools.map((pool, idx) => {
-        if (nonDupTokenList.length > 0) {
-            pool.token_account_ids.map((id) => {
-                for (let i of nonDupTokenList) {
-                    if (i === id) {
-                        isInArr = true
-                    }
-                }
-
-                if (!isInArr) {
-                    nonDupTokenList.push(id)
-                } else {
-                    isInArr = false
-                }
-                return id //dont care return value
-            })
-        } else {
-            nonDupTokenList.push(...pool.token_account_ids)
-        }
+        nonDupTokenList.push(pool.token_account_ids[0], pool.token_account_ids[1])
         return pool //dont care return value
     })
+
+    nonDupTokenList = [...new Set(nonDupTokenList)]
+
     // console.log("Non-duplicate Token List: ", nonDupTokenList)
 
     for (let i of nonDupTokenList) {
@@ -57,6 +44,15 @@ export const getTokenAmountFromShares = (accountShares, totalShares, amountInPoo
     return accountShares / totalShares * amountInPool
 }
 
-export const formatShares = (shares) => {
-    return shares === 1 ? shares : shares.toFixed(2)
+export const formatShares = (accountSharesInPool) => {
+    // console.log(accountSharesInPool)
+    const shares = ((accountSharesInPool) / 10 ** 24).toFixed(2)
+    // console.log("Account shares: ", shares)
+    return shares
+}
+
+export const formatSharesPercent = (accountSharesInPool, totalShares) => {
+    const formatTotalShares = totalShares / 10 ** 24;
+    const sharePercent = (accountSharesInPool / formatTotalShares) * 100
+    return sharePercent === 100 ? sharePercent : sharePercent.toFixed(2);
 }

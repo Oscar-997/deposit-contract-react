@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
 
 import { getGas, getAmount } from '../../utils/getFuntions'
+import { formatShares } from '../../utils/getPoolPairStuff'
+
 
 export default function AddLiquidity({ poolId, symbols, decimals }) {
     const [token1Amount, setToken1Amount] = useState(0)
@@ -88,10 +90,10 @@ export default function AddLiquidity({ poolId, symbols, decimals }) {
                         />
                     </InputGroup>
                 </Modal.Body>
-                <Modal.Footer style={{justifyContent: "space-evenly"}}>
+                <Modal.Footer style={{ justifyContent: "space-evenly" }}>
                     <div>
-                        <p style={{ color: "#FF4646"}}>Total shares: {totalShares}</p>
-                        <p style={{ color: "#21209C"}}>Your shares: {accountShares}</p>
+                        <p style={{ color: "#FF4646" }}>Total shares: {formatShares(totalShares)}</p>
+                        <p style={{ color: "#21209C" }}>Your shares: {formatShares(accountShares)}</p>
                     </div>
                     <Button variant="secondary" onClick={handleClose}>
                         Close

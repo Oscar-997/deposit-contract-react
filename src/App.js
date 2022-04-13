@@ -46,7 +46,7 @@ const App = () => {
           <Route path="/account" element={<Account/>}/>
           <Route path="/swap" element={<Swap/>}/>
           <Route path="/create-pool" element={<CreateNewPool/>}/>
-          <Route path="/add-liquidity" element={<YourLiquidity/>}/>
+          <Route path="/liquidity" element={<YourLiquidity/>}/>
           <Route path="/view-pools" element={<ViewPools/>}/>
         </Routes>
       </BodyWrapper>

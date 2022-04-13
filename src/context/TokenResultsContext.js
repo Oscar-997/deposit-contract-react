@@ -12,7 +12,7 @@ const TokenDataContext = ({ children }) => {
         let tokenResults = []
 
         let depo = await window.contract.get_deposited_tokens({ account_id: window.accountId }).catch(err => {
-            console.log("ERR: ", err)
+            console.log( err)
             return []
         })
 

@@ -76,7 +76,7 @@ const ButtonViewAccount = () => {
                 <MenuDropdown className='pool-list'>
                     <Link to={'/create-pool'}>Create New Pool</Link>
                     <Link to={'/view-pools'}>View Pools</Link>
-                    <Link to={'/add-liquidity'}>Your liquidity</Link>
+                    <Link to={'/liquidity'}>Your liquidity</Link>
                 </MenuDropdown>
             </WrapButtonPool>
         </>

@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 
 
-import { getPoolPairDecimals, getPoolPairSymbols, getMetadataOfAllTokens, formatShares, getTokenAmountFromShares } from '../../utils/getPoolPairStuff';
+import { getPoolPairDecimals, getPoolPairSymbols, getMetadataOfAllTokens, formatShares, getTokenAmountFromShares, formatSharesPercent } from '../../utils/getPoolPairStuff';
 import loading from '../../assets/loading-gift.gif'
 
 const YourLiquidity = () => {
@@ -11,10 +11,11 @@ const YourLiquidity = () => {
     const accountId = window.accountId
     // exchange contract
     const contract = window.contract
+    // check sign in
+    const [isSignedIn, _] = useState(window.walletConnection.isSignedIn())
 
     const [allPool, setAllPools] = useState([])
     const [liquidityInfo, setLiquidityInfo] = useState([])
-
 
     useEffect(() => {
         const getAllPools = async () => {
@@ -22,17 +23,16 @@ const YourLiquidity = () => {
                 from: 0,
                 limit: 100
             })
-            // console.log("All pools: ", allPool)
+            console.log("All pools: ", allPool)
             setAllPools(allPool)
         }
-
-        getAllPools()
+        isSignedIn && getAllPools()
     }, [])
 
     useEffect(() => {
         const getYourLiquidityPools = async () => {
             const uniqueMetadata = await getMetadataOfAllTokens()
-            // console.log("unique metadata: ", uniqueMetadata) 
+            console.log("unique metadata: ", uniqueMetadata)
             let temp_liquidityInfo = []
 
             if (allPool.length > 0) {
@@ -55,14 +55,10 @@ const YourLiquidity = () => {
                         const yourTokenAInPool = getTokenAmountFromShares(accountSharesInPool, totalSharesInPool, allPool[i].amounts[0])
                         const yourTokenBInPool = getTokenAmountFromShares(accountSharesInPool, totalSharesInPool, allPool[i].amounts[1])
 
-                        const rawShares = accountSharesInPool / totalSharesInPool
-                        const youSharesInPool = formatShares(rawShares)
-                        const yourSharesPercentInPool = (accountSharesInPool / totalSharesInPool + accountSharesInPool % totalSharesInPool) * 100
-
-                        // console.log(`Your Shares In Pool as Percent ${yourSharesPercentInPool}%`)
-                        // console.log("Your Shares In Pool: ", youSharesInPool)
-                        // console.log("Your Token A Amount In Pool: ", yourTokenAInPool)
-                        // console.log("Your Token B Amount In Pool: ", yourTokenBInPool)
+                        // account shares formatted
+                        const youSharesInPool = formatShares(accountSharesInPool)
+                        // total shares formatted
+                        const yourSharesPercentInPool = formatSharesPercent(youSharesInPool, totalSharesInPool)
 
                         temp_liquidityInfo.push({
                             id: i,
@@ -72,46 +68,47 @@ const YourLiquidity = () => {
                             shares: youSharesInPool,
                             sharesPercent: yourSharesPercentInPool
                         })
-                        // console.log("temp_liquidity infor: ", temp_liquidityInfo)
-                        // console.log(`Account shares in pool [${i}]\t: ${accountSharesInPool}`)
-                        // console.log(`Total shares in pool[${i}]\t: ${totalSharesInPool}`)
                     }
                 }
                 setLiquidityInfo(temp_liquidityInfo)
                 temp_liquidityInfo = []
             }
         }
-
-        getYourLiquidityPools()
+        isSignedIn && getYourLiquidityPools()
     }, [allPool])
-    console.log(liquidityInfo)
     return (
         <>
-            {liquidityInfo.length > 0 ?
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Pool ID</th>
-                            <th>Token</th>
-                            <th></th>
-                            <th>Shares</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {liquidityInfo.map((poolInfo, index) => {
-                            return (
-                                <tr key={index}>
-                                    <td>{poolInfo.id}</td>
-                                    <td>{poolInfo.symbols.token1Symbol} - {poolInfo.symbols.token2Symbol}</td>
-                                    <td>{poolInfo.amounts[0] / 10 ** poolInfo.decimals.token1Decimal} - {poolInfo.amounts[1] / 10 ** poolInfo.decimals.token1Decimal}</td>
-                                    <td>{`${poolInfo.shares} (${poolInfo.sharesPercent}%)`}</td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </Table>
+            {isSignedIn ?
+                allPool.length !== 0 ?
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Pool ID</th>
+                                <th>Token</th>
+                                <th></th>
+                                <th>Shares</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {liquidityInfo.length > 0 ?
+                                (liquidityInfo.map((poolInfo, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{poolInfo.id}</td>
+                                            <td>{poolInfo.symbols.token1Symbol} - {poolInfo.symbols.token2Symbol}</td>
+                                            <td>{poolInfo.amounts[0] / 10 ** poolInfo.decimals.token1Decimal} - {poolInfo.amounts[1] / 10 ** poolInfo.decimals.token1Decimal}</td>
+                                            <td>{`${poolInfo.shares} (${poolInfo.sharesPercent}%)`}</td>
+                                        </tr>
+                                    )
+                                })) :
+                                <tr><td>You have no liquidity</td></tr>
+                            }
+                        </tbody>
+                    </Table>
+                    :
+                    <img src={loading} style={{ alignSelf: "center" }} alt='loading...'></img>
                 :
-                <img src={loading} style={{ alignSelf: "center" }} alt='loading...'></img>
+                <h1>Connect to your NEAR wallet</h1>
             }
         </>
     )

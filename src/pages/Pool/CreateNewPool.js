@@ -1,6 +1,7 @@
 import { Form, Button, Container, Row, Col, ButtonGroup, ToggleButton } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState, useContext } from 'react';
+
 import { TokenResults } from '../../context/TokenResultsContext'
 import { getConfig } from '../../services/config';
 import { executeMultipleTransactions } from '../../utils/executeMultipleTransactions'
@@ -45,7 +46,7 @@ const CreateNewPool = () => {
     }
 
 
-    const addSimpleLiquidityPool = async (tokenIds, fee) => {
+    const addSimplePool = async (tokenIds, fee) => {
         const storageBalances = await Promise.all(
             tokenIds.map((id) => ftGetStorageBalance(id, config.contractName))
         )
@@ -85,7 +86,7 @@ const CreateNewPool = () => {
         // console.log("token2 infor: ", add_2)
 
 
-        addSimpleLiquidityPool([add_1, add_2], Number(total_fee * 100))
+        addSimplePool([add_1, add_2], Number(total_fee * 100))
     }
 
     return (
