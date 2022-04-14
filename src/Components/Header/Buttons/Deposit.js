@@ -89,6 +89,7 @@ const Deposit = ({ item }) => {
           <Modal.Title>Deposit {item.symbol} token to exchange</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <span>Balance: {item.balanceAccount / 10 ** item.decimals}</span>
           <InputGroup className="mb-3">
             <InputGroup.Text id="inputGroup-sizing-default">{item.symbol}</InputGroup.Text>
             <FormControl
@@ -106,9 +107,6 @@ const Deposit = ({ item }) => {
           </Button>
           <Button variant="danger" onClick={handleClose}>
             Cancel
-          </Button>
-          <Button variant="danger" onClick={() => checkAccToContract()}>
-            check account
           </Button>
         </Modal.Footer>
       </Modal>

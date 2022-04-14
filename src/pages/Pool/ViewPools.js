@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap'
 import { BsFillArrowUpCircleFill } from "react-icons/bs";
-import AddLiquidity from '../../Components/Header/Buttons/AddLiquidity'
-import RemoveLiquidity from '../../Components/Header/Buttons/RemoveLiquidity';
+import { Link } from 'react-router-dom';
+
+
 const ViewPools = () => {
     const [allPools, setAllPools] = useState([])
     const [metaData, setMetaData] = useState({})
 
     const contract = window.contract;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async () => {
         const allPools = await contract.get_pools({ from_index: 0, limit: 100 })
         let nonDupTokenList = [];
@@ -39,7 +41,7 @@ const ViewPools = () => {
         }
         setMetaData(metadata)
         setAllPools(allPools)
-    }, [])
+    }, [contract])
 
     return (
     <>
@@ -52,8 +54,6 @@ const ViewPools = () => {
                     <th>Fee < BsFillArrowUpCircleFill /></th>
                     <th>Amount</th>
                     <th>Pool ids</th>
-                    <th>Add liquidity</th>
-                    <th>Remove liquidity</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,20 +61,16 @@ const ViewPools = () => {
                     allPools.map((item, index) => {
                         return (
                             <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{index + 1}</td>
                                 <td>
-                                    <span style={{ color: 'green' }}>{metaData[item.token_account_ids[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[item.token_account_ids[1]].symbol}</span> <br />
-                                    <span style={{ color: 'green' }}>{item.token_account_ids[0]}</span> -- <span style={{ color: 'blue' }}>{item.token_account_ids[1]}</span>
+                                    <Link to={`/pool-detail/${index}`}>
+                                        <span style={{ color: 'green' }}>{metaData[item.token_account_ids[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[item.token_account_ids[1]].symbol}</span> <br />
+                                        <span style={{ color: 'green' }}>{item.token_account_ids[0]}</span> -- <span style={{ color: 'blue' }}>{item.token_account_ids[1]}</span>
+                                    </Link>
                                 </td>
                                 <td>{item.total_fee / 100 }%</td>
                                 <td>{item.amounts[0] / 10 ** metaData[item.token_account_ids[0]].decimals} -- {item.amounts[1] / 10 ** metaData[item.token_account_ids[1]].decimals}</td>
-                                <td>{index - 1}</td>
-                                <td>
-                                    <AddLiquidity poolId={index - 1} item={item} metaData={metaData}/>
-                                </td>
-                                <td>
-                                    <RemoveLiquidity poolId={index - 1} item={item} metaData={metaData}/>
-                                </td>
+                                <td>{index}</td>
                             </tr>
                         )
                     }) :

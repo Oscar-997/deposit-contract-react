@@ -11,7 +11,7 @@ const StyledShareTotal = styled.div`
   margin: 0 0 0 17px;
 `
 
-const RemoveLiquidity = ({poolId, item, metaData}) => {
+const RemoveLiquidity = ({poolId, poolInfo, metaData}) => {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -27,7 +27,7 @@ const RemoveLiquidity = ({poolId, item, metaData}) => {
 
     const removeLiquidity = async() => {
         await contract.remove_liquidity({
-            pool_id: poolId,
+            pool_id: Number(poolId),
             shares: (totalSharesInAcc * 10 ** 24).toLocaleString('fullwide', {
               useGrouping: false
             }),
@@ -40,7 +40,7 @@ const RemoveLiquidity = ({poolId, item, metaData}) => {
 
     const getShareInPool = async() => {
       const shares =  await contract.get_pool_shares({
-        pool_id: poolId,
+        pool_id: Number(poolId),
         account_id: window.accountId
       })
       setShares(shares) 
@@ -74,7 +74,7 @@ const RemoveLiquidity = ({poolId, item, metaData}) => {
             </Modal.Body>
             <StyledShareTotal>
               <span>Your Shares: {shares / 10 ** 24}</span> <br />
-              <span style={{color: 'blue'}} >Total Shares: {item.shares_total_supply / 10 ** 24}</span>
+              <span style={{color: 'blue'}} >Total Shares: {poolInfo.shares_total_supply / 10 ** 24}</span>
             </StyledShareTotal>
           <Modal.Footer>
             <Button variant="primary" onClick={removeLiquidity}>

@@ -11,7 +11,7 @@ const StyledShareTotal = styled.div`
   margin: 0 0 0 17px;
 `
 
-const AddLiquidity = ({ poolId, item, metaData}) => {
+const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
 
     const [show, setShow] = useState(false);
 
@@ -20,6 +20,10 @@ const AddLiquidity = ({ poolId, item, metaData}) => {
     const [amountToken1, setAmountToken1] = useState('')
     const [amountToken2, setAmountToken2] = useState('')
     const [shares, setShares] = useState(0)
+
+    // useState get token amount in contract
+    const [token1, setToken1] = useState(0)
+    const [token2, setToken2] = useState(0)
 
     const contract = window.contract
 
@@ -33,9 +37,9 @@ const AddLiquidity = ({ poolId, item, metaData}) => {
 
     const addLiquidity = async() => {
         await contract.add_liquidity({
-            pool_id: poolId,
-            amounts: [(amountToken1 * 10 ** metaData[item.token_account_ids[0]].decimals).toString() ,
-                     (amountToken2 * 10 ** metaData[item.token_account_ids[1]].decimals).toString()]
+            pool_id: Number(poolId),
+            amounts: [(amountToken1 * 10 ** metaData[poolInfo.token_account_ids[0]].decimals).toString() ,
+                     (amountToken2 * 10 ** metaData[poolInfo.token_account_ids[1]].decimals).toString()]
         }, 
             getGas("300000000000000"),
             getAmount('0.0009')
@@ -44,15 +48,34 @@ const AddLiquidity = ({ poolId, item, metaData}) => {
 
     const getShareInPool = async() => {
       const shares =  await contract.get_pool_shares({
-        pool_id: poolId,
+        pool_id: Number(poolId),
         account_id: window.accountId
       })
       setShares(shares) 
     }
 
+    const getToken1InContract = async() => {
+      const tokenAmount = await contract.get_token_balance({
+        account_id: window.accountId,
+        token_id: poolInfo.token_account_ids[0],
+      })
+      setToken1(tokenAmount);
+    }
+
+    const getToken2InContract = async() => {
+      const tokenAmount = await contract.get_token_balance({
+        account_id: window.accountId,
+        token_id: poolInfo.token_account_ids[1],
+      })
+      setToken2(tokenAmount);
+    }
+
     useEffect(() => {
-      getShareInPool()
+      getShareInPool();
+      getToken1InContract();
+      getToken2InContract();
     }, [])
+
 
     return (
       <>
@@ -65,9 +88,9 @@ const AddLiquidity = ({ poolId, item, metaData}) => {
             <Modal.Title>Add liquidity</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <span>Balance : </span>
+            <span>Balance : {token1 ? token1 / 10 ** metaData[poolInfo.token_account_ids[0]].decimals : 0}</span>
             <InputGroup className="mb-3">
-                <InputGroup.Text id="inputGroup-sizing-default">{metaData[item.token_account_ids[0]].symbol}</InputGroup.Text>
+                <InputGroup.Text id="inputGroup-sizing-default">{metaData[poolInfo.token_account_ids[0]].symbol}</InputGroup.Text>
                 <FormControl
                 // aria-label="Default"
                 aria-describedby="inputGroup-sizing-default"
@@ -77,8 +100,9 @@ const AddLiquidity = ({ poolId, item, metaData}) => {
                 </InputGroup>
             </Modal.Body>
             <Modal.Body>
+            <span>Balance : {token2 ? token2 / 10 ** metaData[poolInfo.token_account_ids[1]].decimals : 0}</span>
             <InputGroup className="mb-3">
-                <InputGroup.Text id="inputGroup-sizing-default">{metaData[item.token_account_ids[1]].symbol}</InputGroup.Text>
+                <InputGroup.Text id="inputGroup-sizing-default">{metaData[poolInfo.token_account_ids[1]].symbol}</InputGroup.Text>
                 <FormControl
                 // aria-label="Default"
                 aria-describedby="inputGroup-sizing-default"
@@ -89,7 +113,7 @@ const AddLiquidity = ({ poolId, item, metaData}) => {
             </Modal.Body>
             <StyledShareTotal>
               <span>Your Shares: {shares / 10 ** 24}</span> <br />
-              <span style={{color: 'blue'}} >Total Shares: {item.shares_total_supply / 10 ** 24}</span>
+              <span style={{color: 'blue'}} >Total Shares: {poolInfo.shares_total_supply / 10 ** 24}</span>
             </StyledShareTotal>
           <Modal.Footer>
             <Button variant="primary" onClick={addLiquidity}>
