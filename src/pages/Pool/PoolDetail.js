@@ -113,7 +113,7 @@ const PoolDetail = () => {
                     </StyledRow>
                 </Card.Body>
                 <ListGroup className="list-group-flush">
-                    <ListGroupItem>Fee : { poolInfo.total_fee}</ListGroupItem>
+                    <ListGroupItem>Fee : { poolInfo.total_fee / 100}%</ListGroupItem>
                     <ListGroupItem>Total shares: { poolInfo.shares_total_supply / 10 ** 24}</ListGroupItem>
                     <ListGroupItem>Shares: {shares / 10 ** 24}</ListGroupItem>
                 </ListGroup>

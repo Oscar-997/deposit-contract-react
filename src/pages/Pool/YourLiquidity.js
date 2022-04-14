@@ -2,6 +2,7 @@ import { Table } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { getMetaData, getPoolPairSymbols, getPoolPairDecimals, getAmountTokenFromShare,formatShares, formatSharesPercent } from '../../utils/getPoolPairStuff';
 import loading from '../../assets/loading-gift.gif';
+import { Link } from 'react-router-dom';
 
 const YourLiquidity = () => {
 
@@ -88,7 +89,11 @@ const YourLiquidity = () => {
                         return (
                             <tr key={index}>
                                 <td>{item.id}</td>
-                                <td>{item.symbol.token1Symbol} -- {item.symbol.token2Symbol}</td>
+                                <td>
+                                    <Link to={`/pool-detail/${item.id}`}>
+                                        {item.symbol.token1Symbol} -- {item.symbol.token2Symbol}
+                                    </Link>
+                                </td>
                                 <td>{item.amounts[0] / 10 ** item.decimals.token1Decimal} -- {item.amounts[1] / 10 ** item.decimals.token2Decimal}</td>
                                 <td>{item.shares} ({item.sharesPercent}%)</td>
                                 <td></td>
