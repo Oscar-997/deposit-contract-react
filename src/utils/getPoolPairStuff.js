@@ -1,7 +1,7 @@
 export const getAllPools = async () => {
     const exContract = window.contract
     return await exContract.get_pools({
-        from: 0,
+        from_index: 0,
         limit: 600
     })
 }

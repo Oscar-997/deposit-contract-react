@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Table, Container, Button } from 'react-bootstrap';
+import { Table, Container } from 'react-bootstrap';
 
 import { StyledLoading } from "../Account/Account";
 import loading from '../../assets/loading-gift.gif'

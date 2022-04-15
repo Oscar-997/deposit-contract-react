@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
-import { parseNearAmount, formatNearAmount } from 'near-api-js/lib/utils/format'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
 
 import { getGas, getAmount } from '../../utils/getFuntions'
 import { formatShares } from '../../utils/getPoolPairStuff'
