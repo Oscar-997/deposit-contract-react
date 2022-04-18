@@ -43,6 +43,24 @@ const ViewPools = () => {
         setAllPools(allPools)
     }, [contract])
 
+   allPools.filter((pool, index) => {
+    pool["pool_id"] = index
+   })
+
+   const getPoolPairList = (arr, prop) => {
+        return arr.reduce(function (acc, obj) {
+            let key = obj[[prop]]
+            if(!acc[key]) {
+            acc[key] = []
+            }
+            acc[key].push(obj)
+            return acc
+        }, {})
+   }
+
+   const poolPairList = getPoolPairList(allPools, "token_account_ids")
+   console.log(poolPairList);
+
     return (
     <>
         <h1>List pools</h1>
@@ -53,31 +71,25 @@ const ViewPools = () => {
                     <th style={{ minWidth: 250 }}>Pair</th>
                     <th>Fee < BsFillArrowUpCircleFill /></th>
                     <th>Amount</th>
-                    <th>Pool ids</th>
+                    <th>Pools</th>
                 </tr>
             </thead>
             <tbody>
-                {allPools.length > 0 ?
-                    allPools.map((item, index) => {
+                    {poolPairList && Object.keys(poolPairList).map((key, index) => {
+                        const keyPair = key.split(",")
                         return (
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>
-                                    <Link to={`/pool-detail/${index}`}>
-                                        <span style={{ color: 'green' }}>{metaData[item.token_account_ids[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[item.token_account_ids[1]].symbol}</span> <br />
-                                        <span style={{ color: 'green' }}>{item.token_account_ids[0]}</span> -- <span style={{ color: 'blue' }}>{item.token_account_ids[1]}</span>
-                                    </Link>
+                                    <span style={{ color: 'green' }}>{metaData[keyPair[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[keyPair[1]].symbol}</span> <br />
+                                    <span style={{ color: 'green' }}>{keyPair[0]}</span> -- <span style={{ color: 'blue' }}>{keyPair[1]}</span>
                                 </td>
-                                <td>{item.total_fee / 100 }%</td>
-                                <td>{item.amounts[0] / 10 ** metaData[item.token_account_ids[0]].decimals} -- {item.amounts[1] / 10 ** metaData[item.token_account_ids[1]].decimals}</td>
-                                <td>{index}</td>
+                                <td></td>
+                                <td>{poolPairList[key][0].amounts[0] / 10 ** metaData[keyPair[0]].decimals} -- {poolPairList[key][0].amounts[1] / 10 ** metaData[keyPair[1]].decimals}</td>
+                                <td>{poolPairList[key].length}</td>
                             </tr>
                         )
-                    }) :
-                    <tr>
-                        <td>Loading...</td>
-                    </tr>
-                }
+                    })}
             </tbody>
         </Table>
     </>
