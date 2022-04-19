@@ -35,6 +35,41 @@ export const getMetaData = async() => {
     return metadata
 }
 
+export const getAllPools = async() => {
+    const allPools = await window.contract.get_pools({
+        from_index: 0,
+        limit: 100,
+    })
+    allPools.filter((pool, index) => {
+        pool["pool_id"] = index
+    })
+    return allPools
+}
+
+export const getPoolPair = (pools, prop) => {
+    return pools.reduce(function (accumulate, pool) {
+        let key = pool[prop].toString()
+        let reverseKey = pool[prop].reverse().toString()
+        let isAdded = false
+        if(!accumulate[key]) {
+            accumulate[key] = []
+        }
+        if(accumulate[key]) {
+            accumulate[key].push(pool)
+            isAdded = true
+        }
+        if(accumulate[reverseKey]) {
+            accumulate[reverseKey].push(pool)
+            delete accumulate[key]
+            isAdded = true
+        }
+        if(!isAdded) {
+            accumulate[key].push(pool)
+        }
+        return accumulate
+    }, {})
+}
+
 export const getPoolPairSymbols = (allMetadata, pool) => {
     return {
         token1Symbol: allMetadata[pool.token_account_ids[0]].symbol,
