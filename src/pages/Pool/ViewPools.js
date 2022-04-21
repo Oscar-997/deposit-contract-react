@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap'
+import { NavItem, Table } from 'react-bootstrap'
 import { BsFillArrowUpCircleFill } from "react-icons/bs";
-import { getMetaData, getPoolPair, getAllPools } from '../../utils/getPoolPairStuff';
+import { getMetaData, getAllPools } from '../../utils/getPoolPairStuff';
 import { Link } from 'react-router-dom';
 
 
@@ -14,7 +14,7 @@ const ViewPools = () => {
         setAllPools(await getAllPools());
     }, []);
 
-    let poolPairList = getPoolPair(allPools, "token_account_ids")
+    
 
     return (
     <>
@@ -30,29 +30,30 @@ const ViewPools = () => {
                 </tr>
             </thead>
             <tbody>
-                    {poolPairList && Object.keys(poolPairList).map((key, index) => {
-                        const keyPair = key.split(",")
+                    {allPools.map((item, index) => {
                         return (
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td
                                     style={{textAlign: "center"}}
                                 >
-                                    <span style={{ color: 'green' }}>{metaData[keyPair[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[keyPair[1]].symbol}</span> <br />
-                                    <span style={{ color: 'green' }}>{keyPair[0]}</span> -- <span style={{ color: 'blue' }}>{keyPair[1]}</span>
+                                    <span style={{ color: 'green' }}>{metaData[item.token_account_ids[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[item.token_account_ids[1]].symbol}</span> <br />
+                                    <span style={{ color: 'green' }}>{item.token_account_ids[0]}</span> -- <span style={{ color: 'blue' }}>{item.token_account_ids[1]}</span>
                                 </td>
                                 <td
                                     style={{textAlign: "center"}}
-                                >{poolPairList[key][0].total_fee / 100}%</td>
+                                >
+                                    {[item][0].total_fee / 100}%
+                                </td>
                                 <td
                                     style={{textAlign: "center"}}
-                                >{poolPairList[key][0].amounts[0] / 10 ** metaData[keyPair[0]].decimals} -- {poolPairList[key][0].amounts[1] / 10 ** metaData[keyPair[1]].decimals}</td>
+                                >{[item][0].amounts[0] / 10 ** metaData[item.token_account_ids[0]].decimals} -- {[item][0].amounts[1] / 10 ** metaData[item.token_account_ids[1]].decimals}</td>
                                 <td
                                     style={{textAlign: "center"}}
                                 >
-                                    <Link to={`/pool-pair-list/${keyPair[0]},${keyPair[1]}`} style={{ textDecoration: 'none' }}>
+                                    <Link to={`/pool-pair-list/${item.token_account_ids[0]},${item.token_account_ids[1]}`} style={{ textDecoration: 'none' }}>
                                         <span>
-                                            {poolPairList[key].length}
+                                            {[item].length}
                                         </span>
                                     </Link>
                                 </td>

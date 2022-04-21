@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import ViewPools from './pages/Pool/ViewPools';
 import YourLiquidity from './pages/Pool/YourLiquidity';
 import PoolDetail from './pages/Pool/PoolDetail';
-import PoolPairList from './pages/Pool/PoolPairList'
 
 const AppWrapper = styled.div`
     display: flex;
@@ -53,7 +52,6 @@ const App = () => {
           <Route path="/view-pools" element={<ViewPools/>}/>
           <Route path='/your-liquidity' element={<YourLiquidity/>}/>
           <Route path='/pool-detail/:poolId' element={<PoolDetail/>}/>
-          <Route path='/pool-pair-list/:tokenId1,:tokenId2' element={<PoolPairList />} />
         </Routes>
       </BodyWrapper>)
         : (

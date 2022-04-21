@@ -1,9 +1,10 @@
 import { Form, Button, Container, Row, Col, ButtonGroup, ToggleButton } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { TokenResults } from '../../context/TokenResultsContext'
 import { getConfig } from '../../services/config';
 import { executeMultipleTransactions } from '../../utils/executeMultipleTransactions'
+import { getAllPools } from '../../utils/getPoolPairStuff';
 
 const StyledContainer = styled(Container)`
     margin: 9%;
@@ -14,6 +15,7 @@ const CreateNewPool = () => {
 
     const [token1, setToken1] = useState()
     const [token2, setToken2] = useState()
+    const [allPools, setAllPools] = useState([])
 
     const contract = window.contract
 
@@ -76,12 +78,18 @@ const CreateNewPool = () => {
         
     }
 
+    useEffect(async() => {
+        setAllPools(await getAllPools())
+    },[])
+
     const handleSubmit = (add_1, add_2, total_fee) => {
-        // console.log("Log from handleSubmit!!!")
-        // console.log("token1 infor: ", add_1)
-        // console.log("token2 infor: ", add_2)
-
-
+        for (let i of allPools) {
+            if ((i.token_account_ids[0] === add_1 && i.token_account_ids[1] === add_2) ||  
+            (i.token_account_ids[1] === add_1 && i.token_account_ids[0] === add_2)){
+                console.log("pool pair has exist")
+                return alert("Pool pair has exist")
+            }
+        }
         addSimpleLiquidityPool([add_1, add_2], Number(total_fee * 100))
     }
     
