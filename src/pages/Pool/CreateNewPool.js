@@ -4,11 +4,46 @@ import { useState, useContext, useEffect } from 'react';
 import { TokenResults } from '../../context/TokenResultsContext'
 import { getConfig } from '../../services/config';
 import { executeMultipleTransactions } from '../../utils/executeMultipleTransactions'
-import { getAllPools } from '../../utils/getPoolPairStuff';
+import { getAllPools, getMetaData } from '../../utils/getPoolPairStuff';
+import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
+import AddLiquidity from '../../Components/Header/Buttons/AddLiquidity';
+import RemoveLiquidity from '../../Components/Header/Buttons/RemoveLiquidity';
 
 const StyledContainer = styled(Container)`
     margin: 9%;
     max-width: 800px;
+`
+
+const StyledRow = styled(Row)`
+    margin-bottom: 20px;
+    justify-content: space-between;
+    align-items: center;
+`
+
+const StyledCol = styled(Col)`
+    display: flex ;
+    justify-content: flex-end;
+    align-items: center;
+`
+
+const StyledColToken = styled(Col)`
+    flex-grow: 3;
+`
+
+const WrapButtonLiquidity = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+`
+
+const StyledTitle = styled.div`
+    text-align: center;
+    margin-top: 10px;
+`
+
+const StyledTokenId = styled.span`
+    font-size: 0.7rem;
 `
 
 const CreateNewPool = () => {
@@ -16,6 +51,9 @@ const CreateNewPool = () => {
     const [token1, setToken1] = useState()
     const [token2, setToken2] = useState()
     const [allPools, setAllPools] = useState([])
+    const [poolDuplicate, setPoolDuplicate] = useState([])
+    const [metadata, setMetadata] = useState([])
+    const [shares, setShares] = useState()
 
     const contract = window.contract
 
@@ -78,21 +116,41 @@ const CreateNewPool = () => {
         
     }
 
-    useEffect(async() => {
-        setAllPools(await getAllPools())
-    },[])
+    
+    const formatToken = (token) => {
+        return token == 1 ? token : token.toFixed(2)
+    }
 
     const handleSubmit = (add_1, add_2, total_fee) => {
         for (let i of allPools) {
             if ((i.token_account_ids[0] === add_1 && i.token_account_ids[1] === add_2) ||  
             (i.token_account_ids[1] === add_1 && i.token_account_ids[0] === add_2)){
-                console.log("pool pair has exist")
+                setPoolDuplicate(i)
                 return alert("Pool pair has exist")
             }
         }
         addSimpleLiquidityPool([add_1, add_2], Number(total_fee * 100))
     }
-    
+
+    // get shares
+    const getShareInPool = async() => {
+        const shares = await window.contract.get_pool_shares({
+            pool_id: Number(poolDuplicate.pool_id),
+            account_id: window.accountId,
+        })
+
+        setShares(shares);
+    }
+
+    useEffect(async() => {
+        setAllPools(await getAllPools())
+        setMetadata(await getMetaData())
+        await getShareInPool();
+    },[])
+
+    console.log(poolDuplicate);
+
+
     return (
         <>
         <StyledContainer>
@@ -148,6 +206,50 @@ const CreateNewPool = () => {
                 </Row>
                 <Button className="mt-4" onClick={() => handleSubmit(token1, token2, radioValue)}>Create</Button>
             </Form>
+            { poolDuplicate.amounts ? <Card style={{ width: '18rem', margin: '9%' }}>
+                <StyledTitle>
+                    <h3>Pool Details</h3>
+                </StyledTitle>
+                { poolDuplicate.amounts && 
+                    <><Card.Body>
+                            <StyledRow>
+                                <StyledColToken>
+                                    <span style={{ color: 'green' }}>{metadata[poolDuplicate.token_account_ids[0]].symbol}</span><br />
+                                    <StyledTokenId>{poolDuplicate.token_account_ids[0]}</StyledTokenId>
+                                </StyledColToken>
+                                <StyledCol style={{ color: 'green' }}>{poolDuplicate.amounts[0] / 10 ** metadata[poolDuplicate.token_account_ids[0]].decimals}</StyledCol>
+                            </StyledRow>
+                            <StyledRow>
+                                <StyledColToken>
+                                    <span style={{ color: 'blue' }}>{metadata[poolDuplicate.token_account_ids[1]].symbol}</span><br />
+                                    <StyledTokenId>{poolDuplicate.token_account_ids[1]}</StyledTokenId>
+                                </StyledColToken>
+                                <StyledCol style={{ color: 'blue' }}>{poolDuplicate.amounts[1] / 10 ** metadata[poolDuplicate.token_account_ids[1]].decimals}</StyledCol>
+                            </StyledRow>
+                            <StyledRow>
+                                <Col style={{ alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.7rem' }}>
+                                    {formatToken(poolDuplicate.amounts[0] / poolDuplicate.amounts[0])} {metadata[poolDuplicate.token_account_ids[0]].symbol} = {formatToken(poolDuplicate.amounts[1] / poolDuplicate.amounts[0])} {metadata[poolDuplicate.token_account_ids[1]].symbol}
+                                    </span>
+                                </Col>
+                                <StyledCol>
+                                    <span style={{ fontSize: '0.7rem' }}>
+                                    {formatToken(poolDuplicate.amounts[1] / poolDuplicate.amounts[1])} {metadata[poolDuplicate.token_account_ids[1]].symbol} = {formatToken(poolDuplicate.amounts[0] / poolDuplicate.amounts[1])} {metadata[poolDuplicate.token_account_ids[0]].symbol}
+                                    </span>
+                                </StyledCol>
+                            </StyledRow>
+                        </Card.Body><ListGroup className="list-group-flush">
+                                <ListGroupItem>Fee: { poolDuplicate.total_fee / 100}%</ListGroupItem>
+                                <ListGroupItem>Total shares: { poolDuplicate.shares_total_supply / 10 ** 24}</ListGroupItem>
+                                <ListGroupItem>Shares: {shares ? shares / 10 ** 24 : 0}</ListGroupItem>
+                            </ListGroup><WrapButtonLiquidity>
+                                    <AddLiquidity poolId={poolDuplicate.pool_id} metaData={metadata} poolInfo={poolDuplicate}/>
+                                    <RemoveLiquidity poolId={poolDuplicate.pool_id} metaData={metadata} poolInfo={poolDuplicate}/>
+                            </WrapButtonLiquidity></>
+                    
+                }
+            </Card>  : null
+        }
         </StyledContainer>
         </>
     )
