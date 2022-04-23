@@ -1,4 +1,4 @@
-export const CONTRACT_NAME = process.env.CONTRACT_NAME || 'contractspace.testnet';
+export const CONTRACT_NAME = process.env.CONTRACT_NAME || 'redbullyellow.testnet';
 export function getConfig(env) {
   switch (env) {
   case 'production':

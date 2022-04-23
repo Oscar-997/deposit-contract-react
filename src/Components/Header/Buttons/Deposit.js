@@ -13,6 +13,8 @@ const Deposit = ({ item }) => {
   const config = getConfig('testnet')
   const decimals = item.decimals;
 
+  console.log("token info", item);
+
   // check Account for contract
   const checkAccToContract = async () => {
     let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", { account_id: window.accountId })

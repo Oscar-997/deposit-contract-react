@@ -241,7 +241,7 @@ const CreateNewPool = () => {
                         </Card.Body><ListGroup className="list-group-flush">
                                 <ListGroupItem>Fee: { poolDuplicate.total_fee / 100}%</ListGroupItem>
                                 <ListGroupItem>Total shares: { poolDuplicate.shares_total_supply / 10 ** 24}</ListGroupItem>
-                                <ListGroupItem>Shares: {shares ? shares / 10 ** 24 : 0}</ListGroupItem>
+                                {/* <ListGroupItem>Shares: {shares ? shares / 10 ** 24 : 0}</ListGroupItem>  */}
                             </ListGroup><WrapButtonLiquidity>
                                     <AddLiquidity poolId={poolDuplicate.pool_id} metaData={metadata} poolInfo={poolDuplicate}/>
                                     <RemoveLiquidity poolId={poolDuplicate.pool_id} metaData={metadata} poolInfo={poolDuplicate}/>

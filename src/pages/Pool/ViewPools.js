@@ -36,9 +36,11 @@ const ViewPools = () => {
                                 <td>{index + 1}</td>
                                 <td
                                     style={{textAlign: "center"}}
-                                >
-                                    <span style={{ color: 'green' }}>{metaData[item.token_account_ids[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[item.token_account_ids[1]].symbol}</span> <br />
-                                    <span style={{ color: 'green' }}>{item.token_account_ids[0]}</span> -- <span style={{ color: 'blue' }}>{item.token_account_ids[1]}</span>
+                                >   
+                                    <Link to={`/pool-detail/${index}`}>
+                                        <span style={{ color: 'green' }}>{metaData[item.token_account_ids[0]].symbol}</span> -- <span style={{ color: 'blue' }}>{metaData[item.token_account_ids[1]].symbol}</span> <br />
+                                        <span style={{ color: 'green' }}>{item.token_account_ids[0]}</span> -- <span style={{ color: 'blue' }}>{item.token_account_ids[1]}</span>
+                                    </Link>
                                 </td>
                                 <td
                                     style={{textAlign: "center"}}

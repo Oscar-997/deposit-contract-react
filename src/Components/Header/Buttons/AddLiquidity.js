@@ -1,8 +1,11 @@
 import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BN from "bn.js";
 import {utils} from 'near-api-js';
 import styled from "styled-components";
+import { getConfig } from '../../../services/config';
+import { TokenResults } from "../../../context/TokenResultsContext";
+import { executeMultipleTransactions } from "../../../utils/executeMultipleTransactions";
 
 const getGas = (gas) => gas ? new BN(gas) : new BN('100000000000000');
 const getAmount = (amount) => amount ? new BN(utils.format.parseNearAmount(amount)) : new BN('0');
@@ -13,6 +16,10 @@ const StyledShareTotal = styled.div`
 
 const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
 
+    const { result } = useContext(TokenResults)
+    
+
+    const config = getConfig('testnet')
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -24,6 +31,17 @@ const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
     // useState get token amount in contract
     const [token1, setToken1] = useState(0)
     const [token2, setToken2] = useState(0)
+
+    const filteredTokens1 = result.filter((contractToken) => {
+      return contractToken.id ===  poolInfo.token_account_ids[0]
+    })
+
+    const filteredTokens2 = result.filter((contractToken) => {
+      return contractToken.id ===  poolInfo.token_account_ids[1]
+    })
+
+    console.log("info token 1", filteredTokens1);
+    console.log("info token 2", filteredTokens2);
 
     const contract = window.contract
 
@@ -44,6 +62,142 @@ const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
             getGas("300000000000000"),
             getAmount('0.0009')
         )
+    }
+
+    const checkAccToContract = async () => {
+      let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", { account_id: window.accountId })
+      console.log("Check Account balance: ", checkAcc);
+      return checkAcc
+    }
+
+    const AddLiquidityBatchTransactions = async() => {
+      let transactions = [];
+
+      transactions.unshift({
+        receiverId: config.contractName,
+        functionCalls: [
+          {
+            methodName: 'add_liquidity',
+            args: {
+              pool_id: Number(poolId),
+              amounts: [(amountToken1 * 10 ** metaData[poolInfo.token_account_ids[0]].decimals).toString() ,
+                       (amountToken2 * 10 ** metaData[poolInfo.token_account_ids[1]].decimals).toString()]
+            }, 
+            amount: '0.0009',
+            gas: "300000000000000",
+          }
+        ]
+      })
+
+      transactions.unshift({
+        receiverId: poolInfo.token_account_ids[0],
+        functionCalls: [
+          {
+            methodName: 'ft_transfer_call',
+            args: {
+              receiver_id: config.contractName,
+              amount: (amountToken1 * 10 ** metaData[poolInfo.token_account_ids[0]].decimals).toString(),
+              msg: "",
+            },
+            amount: "0.000000000000000000000001",
+            gas: "100000000000000",
+          }
+        ]
+      });
+
+      transactions.unshift({
+        receiverId: poolInfo.token_account_ids[1],
+        functionCalls: [
+          {
+            methodName: 'ft_transfer_call',
+            args: {
+              receiver_id: config.contractName,
+              amount: (amountToken2 * 10 ** metaData[poolInfo.token_account_ids[1]].decimals).toString(),
+              msg: "",
+            },
+            amount: "0.000000000000000000000001",
+            gas: "100000000000000",
+          }
+        ]
+      });
+
+      if (!filteredTokens1[0].checkRegis) {
+        transactions.unshift({
+          receiverId: config.contractName,
+          functionCalls: [
+            {
+              methodName: 'register_tokens',
+              args: {
+                token_ids: [poolInfo.token_account_ids[0].toString()]
+              }
+            }
+          ]
+        })
+
+        transactions.unshift({
+          receiverId: poolInfo.token_account_ids[0],
+          functionCalls: [
+            {
+              methodName: 'storage_deposit',
+              args: {
+                account_id: config.contractName,
+                registration_only: true,
+              },
+              amount: "0.00125",
+              gas: "100000000000000",
+            },
+          ],
+        })
+      }
+
+      if (!filteredTokens2[0].checkRegis) {
+        transactions.unshift({
+          receiverId: config.contractName,
+          functionCalls: [
+            {
+              methodName: 'register_tokens',
+              args: {
+                token_ids: [poolInfo.token_account_ids[1].toString()]
+              }
+            }
+          ]
+        })
+
+        transactions.unshift({
+          receiverId: poolInfo.token_account_ids[1],
+          functionCalls: [
+            {
+              methodName: 'storage_deposit',
+              args: {
+                account_id: config.contractName,
+                registration_only: true,
+              },
+              amount: "0.00125",
+              gas: "100000000000000",
+            },
+          ],
+        })
+      }
+
+      if (await checkAccToContract() === null) {
+        transactions.unshift({
+          receiverId: config.contractName,
+          functionCalls: [
+            {
+              methodName: 'storage_deposit',
+              args: {
+                account_id: window.accountId,
+                registration_only: false,
+              },
+              amount: "0.01",
+              gas: "100000000000000",
+            }
+          ]
+        })
+      }
+
+      return executeMultipleTransactions(transactions)
+
     }
 
     const getShareInPool = async() => {
@@ -75,6 +229,7 @@ const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
       getToken1InContract();
       getToken2InContract();
     }, [])
+
 
 
     return (
@@ -116,7 +271,7 @@ const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
               <span style={{color: 'blue'}} >Total Shares: {poolInfo.shares_total_supply / 10 ** 24}</span>
             </StyledShareTotal>
           <Modal.Footer>
-            <Button variant="primary" onClick={addLiquidity}>
+            <Button variant="primary" onClick={AddLiquidityBatchTransactions}>
               Add liquidity
             </Button>
             <Button variant="danger" onClick={handleClose}>
