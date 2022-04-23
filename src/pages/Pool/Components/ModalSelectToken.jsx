@@ -2,6 +2,7 @@ import { Button, Modal, FormControl, InputGroup } from 'react-bootstrap';
 import { useState } from 'react';
 import styled from 'styled-components';
 import ModalAddToken from './ModalAddToken';
+import { useEffect } from 'react';
 
 
 const ModalSelectToken = () => {
@@ -9,6 +10,13 @@ const ModalSelectToken = () => {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const getContractDepositToken = async() => {
+        const contractDepositToken = await window.contract.get_deposits({account_id: window.accountId})
+        return contractDepositToken
+    }
+
+    console.log("contract deposit token", getContractDepositToken());
 
     return (
         <>

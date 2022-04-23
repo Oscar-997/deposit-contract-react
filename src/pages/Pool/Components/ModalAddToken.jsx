@@ -33,7 +33,9 @@ const ModalAddToken = () => {
                 methodName: 'register_tokens',
                 args: {
                     token_ids: [tokenId.toString()]
-                }
+                },
+                amount: "0.000000000000000000000001",
+                gas: "100000000000000",
             }
         ]
     })
