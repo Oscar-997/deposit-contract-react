@@ -1,5 +1,5 @@
 import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import BN from "bn.js";
 import {utils} from 'near-api-js';
 import styled from "styled-components";
@@ -150,7 +150,7 @@ const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
         })
       }
 
-      if (!filteredTokens2[0].checkRegis) {
+      if (! [0].checkRegis) {
         transactions.unshift({
           receiverId: config.contractName,
           functionCalls: [

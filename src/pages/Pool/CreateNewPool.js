@@ -8,6 +8,7 @@ import { getAllPools, getMetaData } from '../../utils/getPoolPairStuff';
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
 import AddLiquidity from '../../Components/Header/Buttons/AddLiquidity';
 import RemoveLiquidity from '../../Components/Header/Buttons/RemoveLiquidity';
+import ModalSelectToken from './Components/ModalSelectToken';
 
 const StyledContainer = styled(Container)`
     margin: 9%;
@@ -158,14 +159,15 @@ const CreateNewPool = () => {
                 <h1>Create New Pool</h1>
                 <Row className="justify-content-md-center">
                     <Col>
-                        <select onChange={(e) => setToken1(e.target.value)} className="form-select">
+                        {/* <select onChange={(e) => setToken1(e.target.value)} className="form-select">
                             <option value='null'>Select Token 1</option>
                             {result.map((item, index) => {
                                 return (
                                     <option key={index} value={item.id}> {item.name}</option>
                                 )
                             })}
-                        </select>
+                        </select> */}
+                        <ModalSelectToken />
                     </Col>
                     <Col>
                         <select onChange={(e) => setToken2(e.target.value)} className="form-select">

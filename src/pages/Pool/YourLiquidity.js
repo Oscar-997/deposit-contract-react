@@ -47,8 +47,7 @@ const YourLiquidity = () => {
     
                         const yourToken1InPool = getAmountTokenFromShare(accountShareInPool, totalShareInPool, allPools[i].amounts[0]) 
                         const yourToken2InPool = getAmountTokenFromShare(accountShareInPool, totalShareInPool, allPools[i].amounts[1]) 
-    
-                        
+                    
                         const yourSharesInPool = formatShares(accountShareInPool)
                         const yourSharesPercentInPool = formatSharesPercent(accountShareInPool, totalShareInPool)
                         

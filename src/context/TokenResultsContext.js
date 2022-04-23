@@ -11,8 +11,6 @@ const TokenRs = ({ children }) => {
     const getBalanceOf = async () => {
         let tokenResults = []
     
-        let depo = await window.contract.get_deposits({ account_id: window.accountId })
-    
             const tokens = await fetch(
                 `${config.helperUrl}/account/${window.accountId}/likelyTokens`
             )
@@ -45,12 +43,6 @@ const TokenRs = ({ children }) => {
                     obj.checkRegis = true
                 }else {
                     obj.checkRegis = false
-                }
-    
-                for (let i2 in depo) {
-                    if (i === i2) {
-                        obj.balanceContract = depo[i]
-                    }
                 }
                 tokenResults.push(obj)
             }

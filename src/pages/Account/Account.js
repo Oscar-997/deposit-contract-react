@@ -28,11 +28,8 @@ const Account = () => {
                         <th>Symbol</th>
                         <th>Token name</th>
                         <th>Token ID</th>
-                        <th>Amount in wallet Account</th>
-                        <th>Amount in Contract</th>
+                        <th>NEAR wallet</th>
                         <th>Decimals</th>
-                        <th>Deposit</th>
-                        <th>Withdraw</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,14 +41,7 @@ const Account = () => {
                                 <td>{item.name}</td>
                                 <td>{item.id}</td>
                                 <td>{item.balanceAccount * (10 ** -item.decimals) ? item.balanceAccount * (10 ** -item.decimals) : 0}</td>
-                                <td>{item.balanceContract * (10 ** -item.decimals) ? item.balanceContract * (10 ** -item.decimals) : 0}</td>
                                 <td>{item.decimals}</td>
-                                <td>
-                                    <Deposit item={item}/>
-                                </td>
-                                <td>
-                                    <Withdraw item={item}/>
-                                </td>
                             </tr>
                         )
                     })}
