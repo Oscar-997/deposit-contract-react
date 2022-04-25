@@ -1,12 +1,16 @@
 import { Button, Modal, FormControl, InputGroup } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import ModalAddToken from './ModalAddToken';
-import { useEffect } from 'react';
-
+import { TokenResults } from '../../../context/TokenResultsContext'
 
 const ModalSelectToken = () => {
     const [show, setShow] = useState(false);
+    const [depo, setDepo] = useState({});
+
+    const { result } = useContext(TokenResults)
+
+    console.log("result", result);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -16,7 +20,17 @@ const ModalSelectToken = () => {
         return contractDepositToken
     }
 
-    console.log("contract deposit token", getContractDepositToken());
+    useEffect( async() => {
+        setDepo(await getContractDepositToken())
+    }, [])
+
+    // const filterResultToken = result.filter((token) => {
+    //     return token.id === Object.keys(depo)[0]
+    // })
+
+    // console.log("filter rusult", filterResultToken);
+
+    console.log("token has deposit into contract", Object.keys(depo));
 
     return (
         <>
@@ -42,6 +56,14 @@ const ModalSelectToken = () => {
                     />&nbsp;&nbsp;&nbsp;
                     <ModalAddToken />
                 </InputGroup>
+                    {Object.keys(depo).map((token, index) => {
+                        return (
+                            <>
+                                <StyledToken>{token}</StyledToken>
+                            </>
+                        )
+                    })}
+
                 </Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
@@ -67,6 +89,10 @@ const StyledTokenSelectButton = styled.div`
         background-color: #333;
         color: #fff;
     }
+`
+
+const StyledToken = styled.div`
+
 `
 
 export default ModalSelectToken

@@ -23,6 +23,13 @@ const ModalAddToken = () => {
       return await window.walletConnection.account().viewFunction(tokenId, 'storage_balance_of', {account_id: accountId});
   }
 
+  // check Account for contract
+  const checkAccToContract = async () => {
+    let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", { account_id: window.accountId })
+    console.log("Check Account balance: ", checkAcc);
+    return checkAcc
+  }
+
   const regisAndStorageDepo = async(tokenId) => {
     let transactions = []
 
@@ -55,6 +62,22 @@ const ModalAddToken = () => {
           },
         ],
       });
+    }
+
+    if (await checkAccToContract() === null) {
+      transactions.unshift({
+        receiverId: config.contractName,
+        functionCalls: [
+          {
+            methodName: 'storage_deposit',
+            args: {
+              registration_only: false,
+            },
+            amount: "0.01",
+            gas: "100000000000000",
+          }
+        ]
+      })
     }
 
     return executeMultipleTransactions(transactions)

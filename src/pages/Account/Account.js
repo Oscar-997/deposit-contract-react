@@ -1,8 +1,6 @@
 import { Table, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useContext } from 'react';
-import Deposit from '../../Components/Header/Buttons/Deposit'
-import Withdraw from '../../Components/Header/Buttons/Withdraw';
 import styled from 'styled-components';
 import loading from '../../assets/loading-gift.gif'
 import { TokenResults } from '../../context/TokenResultsContext';
