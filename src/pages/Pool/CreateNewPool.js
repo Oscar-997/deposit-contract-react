@@ -174,7 +174,7 @@ const CreateNewPool = () => {
     useEffect(async() => {
         setAllPools(await getAllPools())
         setMetadata(await getMetaData())
-        await getShareInPool();
+        await getShareInPool()
     },[])
 
     return (

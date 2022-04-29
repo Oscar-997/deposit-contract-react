@@ -16,8 +16,8 @@ export async function initContract() {
         'get_number_of_pools', 
         'get_pool_shares', 
         'get_pool_total_shares', 
-        'get_token_balance'],
-      changeMethods: ['new', 'create_new_pool', 'add_liquidity', 'storage_deposit', 'withdraw', 'add_simple_pool', 'remove_liquidity', 'register_tokens'],
+        'get_account_balance'],
+      changeMethods: ['new', 'create_new_pool', 'add_liquidity', 'storage_deposit', 'withdraw', 'add_simple_pool', 'remove_liquidity', 'register_tokens', 'swap'],
     })
 }
 
