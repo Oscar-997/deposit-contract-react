@@ -47,14 +47,37 @@ const StyledTokenId = styled.span`
     font-size: 0.7rem;
 `
 
-const CreateNewPool = () => {
+const SelectTokenButton = styled.div`
+    border: 1px solid #333;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    border-radius: 10px;
+    :hover {
+        color: #fff;
+        background-color: #333;
+    }
+`
 
+const StyledIcon = styled.img`
+    width: 20px;
+    heigth: 20px;
+`
+
+const CreateNewPool = () => {
+    const [show, setShow] = useState(false);
     const [token1, setToken1] = useState()
     const [token2, setToken2] = useState()
     const [allPools, setAllPools] = useState([])
     const [poolDuplicate, setPoolDuplicate] = useState([])
     const [metadata, setMetadata] = useState([])
     const [shares, setShares] = useState()
+    const [tokenChoice, setTokenChoice] = useState();
+
+
+    const handleClose = () => setShow(false);
 
     const contract = window.contract
 
@@ -114,7 +137,6 @@ const CreateNewPool = () => {
         console.log(transactions)
 
         return executeMultipleTransactions(transactions)
-        
     }
 
     
@@ -130,7 +152,7 @@ const CreateNewPool = () => {
                 return alert("Pool pair has exist")
             }
         }
-        addSimpleLiquidityPool([add_1, add_2], Number(total_fee * 100))
+        addSimpleLiquidityPool([add_1.id, add_2.id], Number(total_fee * 100))
     }
 
     // get shares
@@ -143,14 +165,17 @@ const CreateNewPool = () => {
         setShares(shares);
     }
 
+    const handleOpenModal = (e, choice) => {
+        e.preventDefault();
+        setTokenChoice(choice);
+        setShow(true)
+    }
+
     useEffect(async() => {
         setAllPools(await getAllPools())
         setMetadata(await getMetaData())
         await getShareInPool();
     },[])
-
-    console.log(poolDuplicate);
-
 
     return (
         <>
@@ -167,17 +192,36 @@ const CreateNewPool = () => {
                                 )
                             })}
                         </select> */}
-                        <ModalSelectToken />
+                        <SelectTokenButton onClick={(e) => handleOpenModal(e, 'token1')}>
+                            {token1 ?
+                                <>
+                                    <StyledIcon src={token1.icon ? token1.icon : 'https://i.pinimg.com/736x/ec/14/7c/ec147c4c53abfe86df2bc7e70c0181ff.jpg'}/>
+                                    <span style={{margin: '0 0 0 10px'}}>{token1.symbol}</span>
+                                </>
+                             : 
+                                <span>Select token</span>
+                             }
+                        </SelectTokenButton>
                     </Col>
                     <Col>
-                        <select onChange={(e) => setToken2(e.target.value)} className="form-select">
+                        {/* <select onChange={(e) => setToken2(e.target.value)} className="form-select">
                             <option value='null'>Select Token 2</option>
                             {result.map((item, index) => {
                                 return (
                                     <option key={index} value={item.id} >{item.name}</option>
                                 )
                             })}
-                        </select>
+                        </select> */}
+                        <SelectTokenButton onClick={(e) => handleOpenModal(e, 'token2')}>
+                        {token2 ?
+                                <>
+                                    <StyledIcon src={token2.icon ? token2.icon : 'https://i.pinimg.com/736x/ec/14/7c/ec147c4c53abfe86df2bc7e70c0181ff.jpg'}/>
+                                    <span style={{margin: '0 0 0 10px'}}>{token2.symbol}</span>
+                                </>
+                             : 
+                                <span>Select token</span>
+                             }
+                        </SelectTokenButton>
                     </Col>
                 </Row>
                 <Row className="mt-4">
@@ -252,6 +296,13 @@ const CreateNewPool = () => {
                 }
             </Card>  : null
         }
+        <ModalSelectToken
+            show={show}
+            handleClose={handleClose}
+            setToken1={setToken1}
+            setToken2={setToken2}
+            tokenChoice={tokenChoice}
+        />
         </StyledContainer>
         </>
     )

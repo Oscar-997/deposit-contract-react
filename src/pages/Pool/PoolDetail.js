@@ -53,9 +53,10 @@ const PoolDetail = () => {
         const poolInfo = await contract.get_pool({
             pool_id: Number(poolId),
         })
-
         setPoolInfo(poolInfo);
     }
+
+    console.log("pool info", poolInfo);
 
     // get shares
     const getShareInPool = async() => {

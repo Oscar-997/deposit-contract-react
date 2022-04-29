@@ -53,20 +53,19 @@ const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
         setAmountToken2(e.target.value)
     }
 
-    const addLiquidity = async() => {
-        await contract.add_liquidity({
-            pool_id: Number(poolId),
-            amounts: [(amountToken1 * 10 ** metaData[poolInfo.token_account_ids[0]].decimals).toString() ,
-                     (amountToken2 * 10 ** metaData[poolInfo.token_account_ids[1]].decimals).toString()]
-        }, 
-            getGas("300000000000000"),
-            getAmount('0.0009')
-        )
-    }
+    // const addLiquidity = async() => {
+    //     await contract.add_liquidity({
+    //         pool_id: Number(poolId),
+    //         amounts: [(amountToken1 * 10 ** metaData[poolInfo.token_account_ids[0]].decimals).toString() ,
+    //                  (amountToken2 * 10 ** metaData[poolInfo.token_account_ids[1]].decimals).toString()]
+    //     }, 
+    //         getGas("300000000000000"),
+    //         getAmount('0.0009')
+    //     )
+    // }
 
     const checkAccToContract = async () => {
       let checkAcc = await window.walletConnection.account().viewFunction(config.contractName, "storage_balance_of", { account_id: window.accountId })
-      console.log("Check Account balance: ", checkAcc);
       return checkAcc
     }
 
@@ -150,7 +149,7 @@ const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
         })
       }
 
-      if (! [0].checkRegis) {
+      if (! filteredTokens2[0].checkRegis) {
         transactions.unshift({
           receiverId: config.contractName,
           functionCalls: [
@@ -209,18 +208,12 @@ const AddLiquidity = ({ poolId, poolInfo, metaData}) => {
     }
 
     const getToken1InContract = async() => {
-      const tokenAmount = await contract.get_token_balance({
-        account_id: window.accountId,
-        token_id: poolInfo.token_account_ids[0],
-      })
+      const tokenAmount = await await window.walletConnection.account().viewFunction(poolInfo.token_account_ids[0], "ft_balance_of", { account_id: window.accountId })
       setToken1(tokenAmount);
     }
 
     const getToken2InContract = async() => {
-      const tokenAmount = await contract.get_token_balance({
-        account_id: window.accountId,
-        token_id: poolInfo.token_account_ids[1],
-      })
+      const tokenAmount = await window.walletConnection.account().viewFunction(poolInfo.token_account_ids[1], "ft_balance_of", { account_id: window.accountId })
       setToken2(tokenAmount);
     }
 

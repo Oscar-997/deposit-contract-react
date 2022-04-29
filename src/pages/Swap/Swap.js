@@ -25,9 +25,11 @@ const Swap = () => {
 
     const { result } = useContext(TokenResults) || ''
 
+    console.log("result: ", result);
+
     const getInfoToken1 = (e) => { 
         const selectedToken1 = result.filter(token => token.symbol === e.target.value)[0]
-        setBalanceToken1(selectedToken1.balanceContract)
+        setBalanceToken1(selectedToken1.balanceAccount)
         setDecimalsToken1(selectedToken1.decimals)
         setSymbolToken1(selectedToken1.symbol)
     }
@@ -35,9 +37,13 @@ const Swap = () => {
     const getInfoToken2 = (e) => {
         const selectedToken2 = result.filter(token => token.symbol === e.target.value)[0]
 
-        setBalanceToken2(selectedToken2.balanceContract)
+        setBalanceToken2(selectedToken2.balanceAccount)
         setDecimalsToken2(selectedToken2.decimals)
         setSymbolToken2(selectedToken2.symbol)
+    }
+
+    const handleSwap = () => {
+        
     }
 
     return (

@@ -35,6 +35,7 @@ const TokenRs = ({ children }) => {
                     balanceAccount: balanceOfWallet,
                     symbol: metaData.symbol,
                     decimals: metaData.decimals,
+                    icon: metaData.icon
                 }
     
                 let storageBalanceOf = await window.walletConnection.account().viewFunction(i, "storage_balance_of", {account_id: config.contractName })
@@ -67,11 +68,11 @@ export default TokenRs;
 
 
 export const getBalanceOf2 = async () => {
-    let tokenResults = [];
-    const config = getConfig('testnet')
+        let tokenResults = [];
+        const config = getConfig('testnet')
 
 
-    let depo = await window.contract.get_deposits({ account_id: window.accountId })
+        let depo = await window.contract.get_deposited_tokens({ account_id: window.accountId })
 
         const tokens = await fetch(
             `${config.helperUrl}/account/${window.accountId}/likelyTokens`
