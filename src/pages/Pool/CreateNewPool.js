@@ -136,7 +136,7 @@ const CreateNewPool = () => {
 
         console.log(transactions)
 
-        return executeMultipleTransactions(transactions)
+        return executeMultipleTransactions(transactions, window.location.origin + '/view-pools')
     }
 
     
@@ -146,8 +146,8 @@ const CreateNewPool = () => {
 
     const handleSubmit = (add_1, add_2, total_fee) => {
         for (let i of allPools) {
-            if ((i.token_account_ids[0] === add_1 && i.token_account_ids[1] === add_2) ||  
-            (i.token_account_ids[1] === add_1 && i.token_account_ids[0] === add_2)){
+            if ((i.token_account_ids[0] === add_1.id && i.token_account_ids[1] === add_2.id) ||  
+            (i.token_account_ids[1] === add_1.id && i.token_account_ids[0] === add_2.id)){
                 setPoolDuplicate(i)
                 return alert("Pool pair has exist")
             }

@@ -5,7 +5,7 @@ import { PublicKey } from 'near-api-js/lib/utils';
 import { BN } from 'bn.js'
 
 
-export const executeMultipleTransactions = async function (transactions) {
+export const executeMultipleTransactions = async function (transactions, callbackUrl) {
   const wallet = window.walletConnection
   const near = window.near;
 
@@ -44,6 +44,6 @@ export const executeMultipleTransactions = async function (transactions) {
       })
     )
     console.log(tokenTransactions);
-    return wallet.requestSignTransactions({ transactions: tokenTransactions });
+    return wallet.requestSignTransactions({ transactions: tokenTransactions, callbackUrl });
   }
 
